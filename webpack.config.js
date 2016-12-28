@@ -5,7 +5,9 @@ module.exports = {
 	output: {
 		path: './build',
 		filename: 'bundle.js',
+		sourceMapFilename: 'main.map'
 	},
+	devtool: 'source-map',
 	module: {
 		loaders: [{
 			test: /\.jsx?$/,
