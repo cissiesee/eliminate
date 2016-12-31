@@ -1,11 +1,11 @@
 var path = require('path');
 
 module.exports = {
-	entry: './app/main.js',
+	entry: './app/index.js',
 	output: {
 		path: './build',
 		filename: 'bundle.js',
-		sourceMapFilename: 'main.map'
+		sourceMapFilename: 'index.map'
 	},
 	devtool: 'source-map',
 	module: {
@@ -16,7 +16,11 @@ module.exports = {
 			query: {
 				presets: ['react', 'es2015', 'stage-0']
 			}
-		}, {
+		}, /*{
+			test: /\.jsx?$/,
+			include: './app',
+			loaders: 'react-hot'
+		},*/ {
 			test: /\.css$/,
 			loader: 'style!css'
 		}, {
