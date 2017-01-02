@@ -6,5 +6,7 @@ const rootReducer = combineReducers({
   items,
   filter
 });
+
+debugger
  
 export default rootReducer;
