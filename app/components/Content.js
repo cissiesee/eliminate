@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 class Content extends Component {
     render() {
-        let items = this.props.items.toArray()
+        let items = this.props.items.toArray();
 
         return (
             <ul>
