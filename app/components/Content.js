@@ -2,9 +2,15 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
 
+var css = require('../styles/ui.less');
+
+//console.log(css);
+
 class Content extends Component {
     render() {
         let items = this.props.items.toArray();
+
+        //console.log('items:', items);
 
         return (
             <ul>
@@ -16,7 +22,11 @@ class Content extends Component {
 
 class LiItem extends Component {
     render() {
-        let liClass = classNames({ hidden: !_.isEmpty(this.props.filter) && this.props.filter != this.props.item})
+        let liClass = classNames({ hidden: !_.isEmpty(this.props.filter) && this.props.filter != this.props.item});
+        
+        // console.log('this.props.item:', this.props.item);
+        // console.log('this.props.filter:', this.props.filter);
+        // console.log('liClass:', liClass);
 
         return (
             <li className={liClass}>

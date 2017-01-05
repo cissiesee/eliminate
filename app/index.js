@@ -5,6 +5,8 @@ import App from './containers/App';
 import configureStore from './configureStore';
 
 const store = configureStore();
+
+console.log(store);
  
 ReactDom.render(
     <div>

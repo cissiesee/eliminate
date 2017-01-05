@@ -8,7 +8,6 @@ var actionTypes = actionTypesCreator();
 const initialItems = Immutable.List([1,2,3]);
  
 export default function items(state = initialItems, action) {
-    debugger
     switch(action.type) {
         case actionTypes.ADD_ITEM:
             return state.push( state.size != 0 ? state.get(-1) + 1 : 1 );
