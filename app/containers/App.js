@@ -18,6 +18,7 @@ let App = React.createClass({
             width: '200px',
             margin: '30px auto 0'
         }
+        //console.log('context:', this.context);
         const actions = this.props.actions;
         return (
             <div style={styles}>

@@ -8,14 +8,14 @@ module.exports = {
 	entry: {
 		//'style': __dirname + '/app/styles/ui.less',
 		'index': __dirname + '/app/index.js',
-		'vender': ['react', 'react-immutable-render-mixin','react-dom', 'redux', 'react-redux', 'lodash']
+		'vender': ['react', 'react-immutable-render-mixin','react-dom', 'redux', 'react-redux']
 	},
 	output: {
 		path: __dirname + '/build',
 		filename: 'scripts/[name].js',
 		sourceMapFilename: 'scripts/[name].map'
 	},
-	devtool: 'source-map',
+	//devtool: 'source-map',
 	module: {
 		loaders: [{
 			test: /\.jsx?$/,
