@@ -2,10 +2,10 @@ import keyMirror from 'keymirror';
  
 export default function() {
 	return keyMirror({
-	    ADD_ITEM: null,
-	    DELETE_ITEM: null,
-	    DELETE_ALL: null,
-	    FILTER_ITEM: null
+		ADD_ITEM: null,
+		DELETE_ITEM: null,
+		DELETE_ALL: null,
+		FILTER_ITEM: null
 	});
 }
  
