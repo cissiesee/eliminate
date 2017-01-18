@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "webpack-dev-server",
     "build": "webpack",
-    "dev": "webpack --progress --colors --watch"
+    "dev": "webpack --progress --colors --watch --dev"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +16,8 @@
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
+    "browser-sync": "^2.18.6",
+    "browser-sync-webpack-plugin": "^1.1.3",
     "classnames": "^2.2.5",
     "css-loader": "^0.26.1",
     "extract-text-webpack-plugin": "^1.0.1",

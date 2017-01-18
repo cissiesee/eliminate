@@ -2,7 +2,7 @@ import React from 'react';
 class EliminateElement extends React.Component {
 	render() {
 		return ( 
-			<div className = "eleminate-element" >
+			<div className="eleminate-element">
 				element
 			</div>
 		);
