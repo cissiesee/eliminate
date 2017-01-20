@@ -20,7 +20,7 @@ var plugins = [
 		filename: __dirname + '/build/index.html',
 		template: __dirname + '/app/tpl/index.html',
 		chunks: ['scripts/common' + afterfix, 'index'] // 这个模板对应上面那个节点
-	}),
+	})/*,
 	new BrowserSyncPlugin({  
 		// browse to http://localhost:3000/ during development
 		host: '0.0.0.0',
@@ -30,7 +30,7 @@ var plugins = [
 		// prevent BrowserSync from reloading the page
         // and let Webpack Dev Server take care of this
 		reload: true
-	})
+	})*/
 ];
 
 if (!isDev) {
