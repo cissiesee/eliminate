@@ -1,0 +1,40 @@
+:global(.transitionWrapper-enter){
+    transform: translate(100%, 0);
+    transition: transform 300ms ease-out;
+}
+ 
+:global(.transitionWrapper-enter.transitionWrapper-enter-active){
+    transform: translate(0, 0);
+}
+ 
+:global(.transitionWrapper-leave){
+    transform: translate(0, 0);
+    transition: transform 1000ms ease-out;
+}
+ 
+:global(.transitionWrapper-leave.transitionWrapper-leave-active){
+    transform: translate(-100%, 0);
+}
+
+
+:global(.transitionWrapper-back-enter){
+    transform: translate(-100%, 0);
+    transition: transform 300ms ease-out;
+}
+ 
+:global(.transitionWrapper-back-enter.transitionWrapper-back-enter-active){
+    transform: translate(0, 0);
+}
+ 
+:global(.transitionWrapper-back-leave){
+    transform: translate(0, 0);
+    transition: transform 1000ms ease-out;
+}
+ 
+:global(.transitionWrapper-back-leave.transitionWrapper-back-leave-active){
+    transform: translate(100%, 0);
+}
+ 
+.transitionWrapper{
+    position: relative;
+}
