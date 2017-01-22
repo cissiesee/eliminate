@@ -1,28 +1,29 @@
 import React from "react";
 import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
+import ImmutableRenderMixin from 'react-immutable-render-mixin';
 import style from "./container.css";
 
-export default class Container extends React.Component {
-	constructor(props, context) {
-		super(props, context);
-	}
+let Container = React.createClass({
+	mixins: [ImmutableRenderMixin],
 	componentWillMount() {
 		document.body.style.margin = "0px";
 		// 这是防止页面被拖拽
 		document.body.addEventListener('touchmove', (ev) => {
 			ev.preventDefault();
 		});
-	}
+	},
 	render() {
-		//console.log(style.transitionWrapper);
+		//console.log(this.props.location.pathname, ',', this.props.location.action);
+		let action = this.props.location.action;
+		let transitionName = 'transitionWrapper' + (action === 'POP' ? '-back' : '');
 		return (
 			<ReactCSSTransitionGroup
-                transitionName="transitionWrapper"
+                transitionName={transitionName}
                 component="div"
                 transitionEnterTimeout={300}
-                transitionLeaveTimeout={1000}>
+                transitionLeaveTimeout={300}>
                 <div key={this.props.location.pathname}
-                    style={{position:"absolute", width: "100%"}}>
+                    style={{position:"absolute", width: "100%", background: "#fff"}}>
                     {
                         this.props.children
                     }
@@ -30,4 +31,6 @@ export default class Container extends React.Component {
             </ReactCSSTransitionGroup>
 		);
 	}
-}
+});
+
+export default Container;
