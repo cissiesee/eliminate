@@ -24,6 +24,9 @@ let App = React.createClass({
 		return (
 			<div style={styles}>
 				<h2>Manage Items</h2>
+				<SearchBar filterItem={actions.filterItem}/>
+				<Content items={this.props.items} filter={this.props.filter} deleteItem={actions.deleteItem}/>
+				<Footer addItem={actions.addItem} deleteAll={actions.deleteAll}/>
 				<Link to='/second'>下一页</Link>
 			</div>
 		);
