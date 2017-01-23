@@ -44,7 +44,7 @@ module.exports = {
 	entry: {
 		//'style': __dirname + '/app/styles/ui.less',
 		'index': __dirname + '/app/index.js',
-		'vender': ['react', 'react-immutable-render-mixin', 'react-dom', 'redux', 'react-redux']
+		'vender': ['react', 'react-immutable-render-mixin', 'react-dom', 'redux', 'react-redux', 'react-router']
 	},
 	output: {
 		path: __dirname + '/build',

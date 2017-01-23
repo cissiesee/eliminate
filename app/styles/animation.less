@@ -1,44 +1,43 @@
-:global(.transitionWrapper-enter){
+.transitionWrapper-enter {
     transform: translate(100%, 0);
     transition: transform 300ms ease-out;
 }
  
-:global(.transitionWrapper-enter.transitionWrapper-enter-active){
+.transitionWrapper-enter.transitionWrapper-enter-active {
     transform: translate(0, 0);
 }
  
-:global(.transitionWrapper-leave){
+.transitionWrapper-leave {
     transform: translate(0, 0);
     opacity: 1;
     transition: transform 300ms ease-out, opacity 300ms ease-out;
 }
  
-:global(.transitionWrapper-leave.transitionWrapper-leave-active){
+.transitionWrapper-leave.transitionWrapper-leave-active {
     opacity: 0;
     transform: translate(-100%, 0);
 }
 
-
-:global(.transitionWrapper-back-enter){
+.transitionWrapper-back-enter {
     transform: translate(-100%, 0);
     transition: transform 300ms ease-out;
 }
  
-:global(.transitionWrapper-back-enter.transitionWrapper-back-enter-active){
+.transitionWrapper-back-enter.transitionWrapper-back-enter-active {
     transform: translate(0, 0);
 }
  
-:global(.transitionWrapper-back-leave){
+.transitionWrapper-back-leave {
     transform: translate(0, 0);
     opacity: 1;
     transition: transform 300ms ease-out, opacity 300ms ease-out;
 }
  
-:global(.transitionWrapper-back-leave.transitionWrapper-back-leave-active){
+.transitionWrapper-back-leave.transitionWrapper-back-leave-active {
     opacity: 0;
     transform: translate(100%, 0);
 }
  
-.transitionWrapper{
+.transitionWrapper {
     position: relative;
 }

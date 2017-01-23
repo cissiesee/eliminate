@@ -3,6 +3,13 @@ import ImmutableRenderMixin from 'react-immutable-render-mixin';
 import { Link } from 'react-router';
 
 let SecondPage = React.createClass({
+	mixins: ImmutableRenderMixin,
+	componentWillMount() {
+		//console.log('componentWillMount');
+	},
+	componentDidMount() {
+		//console.log('componentDidMount');
+	},
 	render() {
 		return (
 			<div>

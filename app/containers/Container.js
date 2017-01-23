@@ -1,7 +1,6 @@
 import React from "react";
 import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
 import ImmutableRenderMixin from 'react-immutable-render-mixin';
-import style from "./container.css";
 
 let Container = React.createClass({
 	mixins: [ImmutableRenderMixin],
@@ -11,6 +10,9 @@ let Container = React.createClass({
 		document.body.addEventListener('touchmove', (ev) => {
 			ev.preventDefault();
 		});
+		document.body.ondragover = (ev) => {
+			ev.preventDefault();
+		};
 	},
 	render() {
 		//console.log(this.props.location.pathname, ',', this.props.location.action);
@@ -22,11 +24,8 @@ let Container = React.createClass({
                 component="div"
                 transitionEnterTimeout={300}
                 transitionLeaveTimeout={300}>
-                <div key={this.props.location.pathname}
-                    style={{position:"absolute", width: "100%", background: "#fff"}}>
-                    {
-                        this.props.children
-                    }
+                <div key={this.props.location.pathname} className="ui-page">
+                    {this.props.children}
                 </div>
             </ReactCSSTransitionGroup>
 		);

@@ -1,27 +1,58 @@
-import actionTypesCreator from '../constants/actionTypes';
+import * as ActionTypes from '../constants/actionTypes';
 
-var actionTypes = actionTypesCreator();
- 
 export function addItem(item) {
-    return dispatch => {
-       setTimeout(() => dispatch({type: actionTypes.ADD_ITEM}), 200);
-    };
+	return dispatch => {
+		setTimeout(() => dispatch({
+			type: ActionTypes.ADD_ITEM
+		}), 200);
+	};
+}
+export function addItems(items) {
+	return dispatch => {
+		setTimeout(() => dispatch({
+			type: ActionTypes.ADD_ITEMS
+		}), 200);
+	};
 }
 export function deleteItem(item, e) {
-    return {
-       type: actionTypes.DELETE_ITEM,
-       item
-    };
+	return {
+		type: ActionTypes.DELETE_ITEM,
+		item
+	};
+}
+export function deleteItems(items, e) {
+	return {
+		type: ActionTypes.DELETE_ITEMS,
+		items
+	};
+}
+export function deleteRow(row, e) {
+	return {
+		type: ActionTypes.DELETE_ROW,
+		row
+	};
 }
 export function deleteAll() {
-    return {
-       type: actionTypes.DELETE_ALL
-    };
+	return {
+		type: ActionTypes.DELETE_ALL
+	};
 }
 export function filterItem(e) {
-    let filterItem = e.target.value;
-    return {
-       type: actionTypes.FILTER_ITEM,
-       filterItem
-    };
+	let filterItem = e.target.value;
+	return {
+		type: ActionTypes.FILTER_ITEM,
+		filterItem
+	};
+}
+export function dragItem(item) {
+	return {
+		type: ActionTypes.DRAG_ITEM,
+		item
+	};
+}
+export function swap(items) {
+	return {
+		type: ActionTypes.SWAP_ITEM,
+		items
+	};
 }

@@ -21,6 +21,7 @@
     "classnames": "^2.2.5",
     "css-loader": "^0.26.1",
     "extract-text-webpack-plugin": "^1.0.1",
+    "faker": "^3.1.0",
     "html-webpack-plugin": "^2.26.0",
     "immutable": "^3.8.1",
     "keymirror": "^0.1.1",
