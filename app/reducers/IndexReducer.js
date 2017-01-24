@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
-import items from './items';
-import filter from './filter';
+import itemsInfo from './ItemsReducer';
+import filter from './FilterReducer';
  
 const rootReducer = combineReducers({
-	items,
+	itemsInfo,
   	filter
 });
  

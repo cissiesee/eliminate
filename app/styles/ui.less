@@ -2,16 +2,30 @@
 @import url('./animation.less');
 @import url('./element.less');
 
+@white:#fff;
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
 .hidden {
 	display: none;
 }
 
 body {
-	background: #fff;
+	background: @white;
+	-moz-user-select:none;
+    -webkit-user-select:none;
+    user-select:none; 
 }
 
 .ui-page {
 	position: absolute;
 	width: 100%;
-	background: #fff;
+	background: @white;
+	h2 {
+		margin-bottom: 10px;
+	}
 }

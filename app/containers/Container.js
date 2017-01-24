@@ -2,6 +2,8 @@ import React from "react";
 import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
 import ImmutableRenderMixin from 'react-immutable-render-mixin';
 
+require('../styles/ui.less');
+
 let Container = React.createClass({
 	mixins: [ImmutableRenderMixin],
 	componentWillMount() {
@@ -11,6 +13,12 @@ let Container = React.createClass({
 			ev.preventDefault();
 		});
 		document.body.ondragover = (ev) => {
+			ev.preventDefault();
+		};
+		document.body.ondragstart = (ev) => {
+			ev.preventDefault();
+		};
+		document.body.onselect = (ev) => {
 			ev.preventDefault();
 		};
 	},

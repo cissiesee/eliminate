@@ -70,7 +70,7 @@ module.exports = {
 			loader: 'style!css'
 		}, {
 			test: /\.less$/,
-			loader: ExtractTextPlugin.extract("style-loader", "css-loader?sourceMap")
+			loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
 				//loader: 'style!css!less'
 		}, {
 			test: /\.(png|jpg)$/,

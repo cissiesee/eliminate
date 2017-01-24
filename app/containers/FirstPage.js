@@ -1,24 +1,33 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ImmutableRenderMixin from 'react-immutable-render-mixin';
-import * as ItemsActions from '../actions';
 import { bindActionCreators } from 'redux';
 import { Link, hashHistory } from 'react-router';
-import EliminateContainer from '../components/EliminateContainer';
+
+import * as ItemsActions from '../actions/ItemsAction'; //action
+import EliminateContainer from '../components/EliminateContainer'; //root component
  
 let FirstPage = React.createClass({
 	mixins: [ImmutableRenderMixin],
 	propTypes: {
-		items: React.PropTypes.object,
+		itemsInfo: React.PropTypes.object,
 		filter: React.PropTypes.string
 	},
 	render() {
 		//console.log('context:', this.context);
 		const actions = this.props.actions;
+		const itemsInfo = this.props.itemsInfo;
 		return (
 			<div>
 				<h2>Eliminate JS</h2>
-				<EliminateContainer items={this.props.items} dragItem={actions.dragItem}/>
+				<EliminateContainer
+					itemsInfo={itemsInfo}
+					selectItem={actions.selectItem}
+					swapItems={actions.swapItems}
+					dragItem={actions.dragItem}
+					dragOverItem={actions.dragOverItem}
+					stopDrag={actions.stopDrag}
+				/>
 			</div>
 		);
 	},
@@ -28,7 +37,7 @@ let FirstPage = React.createClass({
 });
 
 export default connect(state => ({
-	items: state.items
+	itemsInfo: state.itemsInfo
 }), dispatch => ({
 	actions: bindActionCreators(ItemsActions, dispatch)
 }))(FirstPage);

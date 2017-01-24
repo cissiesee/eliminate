@@ -50,7 +50,25 @@ export function dragItem(item) {
 		item
 	};
 }
-export function swap(items) {
+export function dragOverItem(item) {
+	return {
+		type: ActionTypes.DRAGOVER_ITEM,
+		item
+	};
+}
+export function stopDrag(item) {
+	return {
+		type: ActionTypes.STOP_DRAG,
+		item
+	};
+}
+export function selectItem(item) {
+	return {
+		type: ActionTypes.SELECT_ITEM,
+		item
+	};
+}
+export function swapItems(items) {
 	return {
 		type: ActionTypes.SWAP_ITEM,
 		items
