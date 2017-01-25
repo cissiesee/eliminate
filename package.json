@@ -6,7 +6,10 @@
   "scripts": {
     "start": "webpack-dev-server --progress --colors --watch --dev",
     "build": "webpack",
-    "dev": "webpack --progress --colors --watch --dev"
+    "dev": "webpack --progress --colors --dev",
+    "dllreact": "webpack --config=dll.react.config.js",
+    "dllredux": "webpack --config=dll.redux.config.js",
+    "dllother": "webpack --config=dll.other.config.js"
   },
   "author": "",
   "license": "ISC",

@@ -77,7 +77,8 @@ export default function itemsInfo(state = itemsInfo, action) {
 	case actionTypes.DRAGOVER_ITEM:
 		if (state.get('dragItem')) {
 			let _items = swapItems(state.get('dragItem'), action.item, state.get('items'));
-			return state.set('items', _items);
+			let newState = state.set('items', _items);
+			return newState.set('dragItem', null);
 		}
 		return state;
 	case actionTypes.STOP_DRAG:

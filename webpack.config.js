@@ -1,12 +1,15 @@
-var path = require('path');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
-var UglifyJsPlugin = require("webpack/lib/optimize/UglifyJsPlugin");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const DllReferencePlugin = require("webpack/lib/DllReferencePlugin");
+const CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
+const UglifyJsPlugin = require("webpack/lib/optimize/UglifyJsPlugin");
 
-var BrowserSyncPlugin = require('browser-sync-webpack-plugin'); 
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin'); 
 
-var argv = process.argv;
+const argv = process.argv;
+const libPath = './build/lib/';
+const scriptPath = './build/scripts/';
 
 var isDev = argv.indexOf('--dev') === -1 ? false : true;
 var afterfix = isDev ? '.js' : '.min.js';
@@ -14,12 +17,23 @@ var afterfix = isDev ? '.js' : '.min.js';
 console.log('isDev:' + isDev);
 
 var plugins = [
-	new CommonsChunkPlugin('scripts/common' + afterfix, ['index', 'vender']),
+	//new CommonsChunkPlugin('scripts/common' + afterfix, ['index', 'vender']),
 	new ExtractTextPlugin('styles/[name].css'),
+	new DllReferencePlugin({
+		context: __dirname,
+		manifest: require(path.resolve(__dirname, libPath + 'manifest-react.json'))
+	}),
+	new DllReferencePlugin({
+		context: __dirname,
+		manifest: require(path.resolve(__dirname, libPath + 'manifest-redux.json'))
+	}),
+	new DllReferencePlugin({
+		context: __dirname,
+		manifest: require(path.resolve(__dirname, libPath + 'manifest-other.json'))
+	}),
 	new HtmlWebpackPlugin({
-		filename: __dirname + '/build/index.html',
-		template: __dirname + '/app/tpl/index.html',
-		chunks: ['scripts/common' + afterfix, 'index'] // 这个模板对应上面那个节点
+		filename: path.resolve(__dirname, './build/index.html'),
+		template: path.resolve(__dirname, './app/tpl/index.html')
 	})/*,
 	new BrowserSyncPlugin({  
 		// browse to http://localhost:3000/ during development
@@ -43,16 +57,15 @@ if (!isDev) {
 module.exports = {
 	entry: {
 		//'style': __dirname + '/app/styles/ui.less',
-		'index': __dirname + '/app/index.js',
-		'vender': ['react', 'react-immutable-render-mixin', 'react-dom', 'redux', 'react-redux', 'react-router']
+		'index': path.resolve(__dirname, './app/index.js')
 	},
 	output: {
-		path: __dirname + '/build',
-		filename: 'scripts/[name]' + afterfix,
-		sourceMapFilename: 'scripts/[name].map'
+		path: path.resolve(__dirname, './build'),
+		filename: '[name]' + afterfix,
+		sourceMapFilename: '[name].map'
 	},
 	devServer: {
-    	contentBase: "./build",
+    	contentBase: path.resolve(__dirname, './build'),
     	inline: true
 	},
 	//devtool: 'source-map',
