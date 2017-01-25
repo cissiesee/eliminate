@@ -1,11 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
+import ImmutableRenderMixin from 'react-immutable-render-mixin';
 //import _ from 'lodash';
 //import classNames from 'classnames';
 import EliminateElement from './EliminateElement';
 
 //console.log(css);
 
-class EliminateContainer extends Component {
+let EliminateContainer = React.createClass({
+	componentDidMount() {
+		//console.log('componentDidMount:', arguments);
+
+	},
 	render() {
 		let itemsInfo = this.props.itemsInfo,
 			items = itemsInfo.get('items');
@@ -25,15 +30,15 @@ class EliminateContainer extends Component {
 				/>)}
 			</ul>
 		);
-	}
-	mouseDownHandler=(e)=>{
+	},
+	mouseDownHandler() {
 		// let mouseDownPosition = {
 		// 	x:e.nativeEvent.clientX,
 		// 	y:e.nativeEvent.clientY
 		// };
-		this.props.selectItem(this.props.item, e.nativeEvent);
-	}
-	mouseMoveHandler=(e)=>{
+		this.props.selectItem(this.props.item);
+	},
+	mouseMoveHandler() {
 		//this.props.dragItem(this.props.item, e.nativeEvent);
 		// if (this.mouseDownPosition) {
 		// 	// let moveValues = {
@@ -45,13 +50,13 @@ class EliminateContainer extends Component {
 		// 	// }
 		// 	this.props.dragItem(this.props.item, e.nativeEvent);
 		// }
-	}
-	mouseUpHandler=(e)=>{
+	},
+	mouseUpHandler() {
+		this.props.stopDrag(this.props.item);
+	},
+	stopDrag() {
 		this.props.stopDrag(this.props.item);
 	}
-	stopDrag=(e)=>{
-		this.props.stopDrag(this.props.item);
-	}
-}
+});
 
 export default EliminateContainer;

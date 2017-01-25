@@ -18,8 +18,8 @@ function generateItems() {
 		for (let row=0; row < itemRowNum; row++) {
 			let backgroundColor = faker.random.arrayElement(colors);
 			items.push({
-				id: 'e' + col + row,
-				text: faker.random.arrayElement(alphabets),
+				id: faker.random.uuid(),
+				//text: faker.random.arrayElement(alphabets),
 				backgroundColor: backgroundColor,
 				fontColor: (backgroundColor === 'yellow' ? '#000' : '#fff'),
 				col: col,
@@ -51,10 +51,71 @@ function swapItems(originItem, destItem, items) {
 	return items;
 }
 
-let items = generateItems();
+function eliminateSameItems(items, key) {
+	let eliminateItems = [], newItems = [];
+	items.forEach(function(item) {
+		let arrRight = detectItem(item, items, 'right', key);
+		let arrLeft = detectItem(item, items, 'left', key);
+		let hArr = arrLeft.concat([item]).concat(arrRight);
+
+		let arrTop = detectItem(item, items, 'top', key);
+		let arrBottom = detectItem(item, items, 'bottom', key);
+		let vArr = arrTop.concat([item]).concat(arrBottom);
+
+		if (hArr.length >= 3) {
+			eliminateItems = eliminateItems.concat(hArr);
+			//console.log('item:', item, ',', 'horizontal must be eliminate ' + hArr.length);
+		}
+
+		if (vArr.length >= 3) {
+			eliminateItems = eliminateItems.concat(vArr);
+			//console.log('item:', item, ',', 'vertical must be eliminate ' + vArr.length);
+		}
+	});
+	console.log(eliminateItems);
+	if (eliminateItems.length) {
+		items.forEach(function(item) {
+			let targetItem = eliminateItems.find(function(_item) {
+				return _item.col === item.col && _item.row === item.row;
+			});
+			if (!targetItem) {
+				newItems.push(item);
+			}
+		});
+	}
+	return newItems;
+}
+
+function detectItem(item, items, direction, key, arr) {
+	let eArr = arr || [];
+	let targetItem = items.find(function(_item) {
+		switch(direction) {
+		case 'right':
+			return (_item.col === item.col + 1 && _item.row === item.row);
+		case 'left':
+			return (_item.col === item.col - 1 && _item.row === item.row);
+		case 'top':
+			return (_item.col === item.col && _item.row === item.row - 1);
+		case 'bottom':
+			return (_item.col === item.col && _item.row === item.row + 1);
+		}
+	});
+	if (!targetItem) {
+		return eArr;
+	}
+	if (targetItem[key] === item[key]) {
+		eArr.push(targetItem);
+		return detectItem(targetItem, items, direction, key, eArr);
+	} else {
+		return eArr;
+	}
+}
+
+let _items = generateItems();
+let items = eliminateSameItems(_items, 'backgroundColor');
 let itemsInfo = Immutable.Map({itemColNum, itemRowNum, square, items, selectItem, dragItem});
 
- 
+
 export default function itemsInfo(state = itemsInfo, action) {
 	switch(action.type) {
 	case actionTypes.ADD_ITEM:
