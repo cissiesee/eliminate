@@ -2,10 +2,12 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const DllReferencePlugin = require("webpack/lib/DllReferencePlugin");
-const CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
+//const CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
 const UglifyJsPlugin = require("webpack/lib/optimize/UglifyJsPlugin");
 
-const BrowserSyncPlugin = require('browser-sync-webpack-plugin'); 
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
+
+var cssValues = require('postcss-modules-values');
 
 const argv = process.argv;
 const libPath = './build/lib/';
@@ -77,18 +79,28 @@ module.exports = {
 			query: {
 				presets: ['react', 'es2015', 'stage-0']
 			}
-		},{
-			test: /\.css$/,
-			//loader: ExtractTextPlugin.extract("style-loader","css-loader")
-			loader: 'style!css'
 		}, {
-			test: /\.less$/,
-			loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
-				//loader: 'style!css!less'
+			test: /\.css$/,
+			loader: ExtractTextPlugin.extract("style-loader", "css-loader?modules&localIdentName=[name]-[local]!postcss-loader")
+			// loader: ExtractTextPlugin.extract({
+			// 	fallbackLoader: 'style-loader',
+			// 	loaders: [
+			// 		{
+			// 			loader: 'css-loader?modules',
+			// 			options: {importLoaders: 1}
+			// 		},
+			// 		{
+			// 			loader: 'less-loader'
+			// 		}
+			// 	]
+			// })
 		}, {
 			test: /\.(png|jpg)$/,
 			loader: 'url?limit=25000'
 		}]
 	},
+	postcss: [
+		cssValues
+	],
 	plugins: plugins
 };

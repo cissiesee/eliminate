@@ -4,7 +4,7 @@ import ImmutableRenderMixin from 'react-immutable-render-mixin';
 //import classNames from 'classnames';
 import EliminateElement from './EliminateElement';
 
-//console.log(css);
+let style = require('../styles/element.css');
 
 let EliminateContainer = React.createClass({
 	componentDidMount() {
@@ -16,7 +16,7 @@ let EliminateContainer = React.createClass({
 			items = itemsInfo.get('items');
 
 		return (
-			<ul className="eleminate-container"
+			<ul className={style["eleminate-container"]}
 				onMouseDown={this.mouseDownHandler}
 				onMouseMove={this.mouseMoveHandler}
 				onMouseUp={this.stopDrag}

@@ -54,6 +54,11 @@ function swapItems(originItem, destItem, items) {
 function eliminateSameItems(items, key) {
 	let eliminateItems = [], newItems = [];
 	items.forEach(function(item) {
+		if (eliminateItems.find(function(_item) {
+			return item.col === _item.col && item.row === _item.row;
+		})) {
+			return;
+		}
 		let arrRight = detectItem(item, items, 'right', key);
 		let arrLeft = detectItem(item, items, 'left', key);
 		let hArr = arrLeft.concat([item]).concat(arrRight);
@@ -72,7 +77,7 @@ function eliminateSameItems(items, key) {
 			//console.log('item:', item, ',', 'vertical must be eliminate ' + vArr.length);
 		}
 	});
-	console.log(eliminateItems);
+	//console.log(eliminateItems);
 	if (eliminateItems.length) {
 		items.forEach(function(item) {
 			let targetItem = eliminateItems.find(function(_item) {
