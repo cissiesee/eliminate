@@ -1,11 +1,10 @@
 import React from 'react';
-let style = require('../styles/element.css');
 //console.log('element style:', style);
 class EliminateElement extends React.Component {
 	render() {
 		var item = this.props.item;
 		return (
-			<div className={style["eleminate-element"]}
+			<div className="eleminate-element"
 				id={this.props.id}
 				draggable="true"
 				onMouseDown={this.props.selectItem.bind(this, item)}

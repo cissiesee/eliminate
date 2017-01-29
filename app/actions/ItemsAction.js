@@ -74,3 +74,10 @@ export function swapItems(items) {
 		items
 	};
 }
+export function checkItems() {
+	return dispatch => {
+		setTimeout(() => dispatch({
+			type: ActionTypes.CHECK_ITEMS
+		}), 500);
+	};
+}

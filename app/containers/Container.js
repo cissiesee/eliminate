@@ -2,8 +2,8 @@ import React from "react";
 import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
 import ImmutableRenderMixin from 'react-immutable-render-mixin';
 
-import uiStyle from "../styles/ui.css";
-import animateStyle from "../styles/animation.css";
+require("../styles/ui.less");
+require("../styles/animation.less");
 
 let Container = React.createClass({
 	mixins: [ImmutableRenderMixin],
@@ -29,11 +29,11 @@ let Container = React.createClass({
 		let transitionName = 'transitionWrapper' + (action === 'POP' ? '-back' : '');
 		return (
 			<ReactCSSTransitionGroup
-                transitionName="transitionName"
+                transitionName={transitionName}
                 component="div"
                 transitionEnterTimeout={300}
                 transitionLeaveTimeout={300}>
-                <div key={this.props.location.pathname} className={uiStyle.page}>
+                <div key={this.props.location.pathname} className="ui-page">
                     {this.props.children}
                 </div>
             </ReactCSSTransitionGroup>

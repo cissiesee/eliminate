@@ -1,35 +1,48 @@
 import React from 'react';
 import ImmutableRenderMixin from 'react-immutable-render-mixin';
-//import _ from 'lodash';
-//import classNames from 'classnames';
+import ReactCSSTransitionGroup from "react/lib/ReactCSSTransitionGroup";
 import EliminateElement from './EliminateElement';
 
-let style = require('../styles/element.css');
+require('../styles/element.less');
+require('../styles/animation.less');
 
 let EliminateContainer = React.createClass({
 	componentDidMount() {
-		//console.log('componentDidMount:', arguments);
-
+		this.checkEliminate();
+	},
+	componentDidUpdate() {
+		this.checkEliminate();
 	},
 	render() {
 		let itemsInfo = this.props.itemsInfo,
 			items = itemsInfo.get('items');
 
 		return (
-			<ul className={style["eleminate-container"]}
+			<ul className="eleminate-container"
 				onMouseDown={this.mouseDownHandler}
 				onMouseMove={this.mouseMoveHandler}
 				onMouseUp={this.stopDrag}
 				onMouseLeave={this.stopDrag}
-				style={{width: itemsInfo.get('itemColNum') * itemsInfo.get('square'), height: itemsInfo.get('itemRowNum') * itemsInfo.get('square')}}>
-				{items.map(item => <EliminateElement
-					item={item} key={item.id} id={item.id}
-					selectItem={this.props.selectItem}
-					dragItem={this.props.dragItem}
-					dragOverItem={this.props.dragOverItem}
-				/>)}
+				style={{width: itemsInfo.get("itemColNum") * itemsInfo.get("square"), height: itemsInfo.get("itemRowNum") * itemsInfo.get("square")}}>
+				<ReactCSSTransitionGroup
+	                transitionName="elementShow"
+	                transitionEnterTimeout={300}
+	                transitionLeaveTimeout={300}
+	                component="div">
+					{items.map(item => <EliminateElement
+						item={item} key={item.id} id={item.id}
+						selectItem={this.props.selectItem}
+						dragItem={this.props.dragItem}
+						dragOverItem={this.props.dragOverItem}
+					/>)}
+				</ReactCSSTransitionGroup>
 			</ul>
 		);
+	},
+	checkEliminate() {
+		if (this.props.itemsInfo.get('check')) {
+			this.props.checkItems();
+		}
 	},
 	mouseDownHandler() {
 		// let mouseDownPosition = {

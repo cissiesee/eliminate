@@ -7,7 +7,7 @@ const UglifyJsPlugin = require("webpack/lib/optimize/UglifyJsPlugin");
 
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
-var cssValues = require('postcss-modules-values');
+//var cssValues = require('postcss-modules-values');
 
 const argv = process.argv;
 const libPath = './build/lib/';
@@ -80,8 +80,8 @@ module.exports = {
 				presets: ['react', 'es2015', 'stage-0']
 			}
 		}, {
-			test: /\.css$/,
-			loader: ExtractTextPlugin.extract("style-loader", "css-loader?modules&localIdentName=[name]-[local]!postcss-loader")
+			test: /\.less$/,
+			loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader")
 			// loader: ExtractTextPlugin.extract({
 			// 	fallbackLoader: 'style-loader',
 			// 	loaders: [
@@ -99,8 +99,5 @@ module.exports = {
 			loader: 'url?limit=25000'
 		}]
 	},
-	postcss: [
-		cssValues
-	],
 	plugins: plugins
 };

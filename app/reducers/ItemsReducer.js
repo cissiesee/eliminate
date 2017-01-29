@@ -11,6 +11,8 @@ let itemRowNum = 10;
 let square = 30;
 let selectItem = null;
 let dragItem = null;
+let lock = true;
+let check = true;
 
 function generateItems() {
 	let items = [];
@@ -32,27 +34,23 @@ function generateItems() {
 }
 
 function swapItems(originItem, destItem, items) {
-	let dragItem = items.find(function(item) {
-			return item.id === originItem.id;
-		}),
-		overItem = items.find(function(item) {
-			return item.id === destItem.id;
-		});
-
-	let originCol = dragItem.col,
-		originRow = dragItem.row,
-		destCol = overItem.col,
-		destRow = overItem.row;
-
-	dragItem.col = destCol;
-	dragItem.row = destRow;
-	overItem.col = originCol;
-	overItem.row = originRow;
-	return items;
+	let newItems = items.map(function(item) {
+		let newItem = Object.assign({}, item);
+		if (item.id === originItem.id) {
+			newItem.col = destItem.col;
+			newItem.row = destItem.row;
+		} else if (item.id === destItem.id) {
+			newItem.col = originItem.col;
+			newItem.row = originItem.row;
+		}
+		return newItem;
+	});
+	return newItems;
 }
 
 function eliminateSameItems(items, key) {
 	let eliminateItems = [], newItems = [];
+	key = key || 'backgroundColor';
 	items.forEach(function(item) {
 		if (eliminateItems.find(function(_item) {
 			return item.col === _item.col && item.row === _item.row;
@@ -87,6 +85,8 @@ function eliminateSameItems(items, key) {
 				newItems.push(item);
 			}
 		});
+	} else {
+		return false;
 	}
 	return newItems;
 }
@@ -116,10 +116,18 @@ function detectItem(item, items, direction, key, arr) {
 	}
 }
 
-let _items = generateItems();
-let items = eliminateSameItems(_items, 'backgroundColor');
-let itemsInfo = Immutable.Map({itemColNum, itemRowNum, square, items, selectItem, dragItem});
-
+let originItems = generateItems();
+//let newItems = eliminateSameItems(originItems);
+let itemsInfo = Immutable.Map({
+	itemColNum, 
+	itemRowNum, 
+	square, 
+	items: originItems, 
+	selectItem, 
+	dragItem,
+	lock,
+	check
+});
 
 export default function itemsInfo(state = itemsInfo, action) {
 	switch(action.type) {
@@ -143,10 +151,18 @@ export default function itemsInfo(state = itemsInfo, action) {
 	case actionTypes.DRAGOVER_ITEM:
 		if (state.get('dragItem')) {
 			let _items = swapItems(state.get('dragItem'), action.item, state.get('items'));
-			let newState = state.set('items', _items);
-			return newState.set('dragItem', null);
+			if (!eliminateSameItems(_items)) {
+				return state.set('dragItem', null);
+			}
+			return state.set('items', _items).set('dragItem', null).set('lock', true).set('check', true);
 		}
 		return state;
+	case actionTypes.CHECK_ITEMS:
+		let _items = eliminateSameItems(state.get('items'));
+		if (!_items) {
+			return state;
+		}
+		return state.set('items', _items).set('check', false).set('lock', false);
 	case actionTypes.STOP_DRAG:
 		if (state.get('dragItem')) {
 			return state.set('dragItem', null);

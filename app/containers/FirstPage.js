@@ -27,6 +27,7 @@ let FirstPage = React.createClass({
 					dragItem={actions.dragItem}
 					dragOverItem={actions.dragOverItem}
 					stopDrag={actions.stopDrag}
+					checkItems={actions.checkItems}
 				/>
 			</div>
 		);
