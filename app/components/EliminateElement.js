@@ -24,9 +24,15 @@ class EliminateElement extends React.Component {
 		);
 	}
 	dragStartHandler=(e)=>{
+		if (this.props.lock) {
+			return;
+		}
 		this.props.dragItem(this.props.item);
 	}
 	mouseEnterHandler=(e)=>{
+		if (this.props.lock) {
+			return;
+		}
 		this.props.dragOverItem(this.props.item);
 	}
 };

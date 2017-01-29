@@ -18,7 +18,24 @@ function generateItems() {
 	let items = [];
 	for (let col=0; col < itemColNum; col++) {
 		for (let row=0; row < itemRowNum; row++) {
-			let backgroundColor = faker.random.arrayElement(colors);
+			let _colors = colors;
+			let topItem = items.find(function(item) {
+				return item.col === col && item.row === row - 1;
+			});
+			let leftItem = items.find(function(item) {
+				return item.col === col - 1 && item.row === row;
+			});
+			if (topItem) {
+				_colors = colors.filter(function(item) {
+					return item !== topItem.backgroundColor;
+				});
+			}
+			if (leftItem) {
+				_colors = _colors.filter(function(item) {
+					return item !== leftItem.backgroundColor;
+				});
+			}
+			let backgroundColor = faker.random.arrayElement(_colors);
 			items.push({
 				id: faker.random.uuid(),
 				//text: faker.random.arrayElement(alphabets),
@@ -48,6 +65,7 @@ function swapItems(originItem, destItem, items) {
 	return newItems;
 }
 
+//核心三消算法
 function eliminateSameItems(items, key) {
 	let eliminateItems = [], newItems = [];
 	key = key || 'backgroundColor';
@@ -57,12 +75,12 @@ function eliminateSameItems(items, key) {
 		})) {
 			return;
 		}
-		let arrRight = detectItem(item, items, 'right', key);
-		let arrLeft = detectItem(item, items, 'left', key);
+		let arrRight = detectSameItem(item, items, 'right', key);
+		let arrLeft = detectSameItem(item, items, 'left', key);
 		let hArr = arrLeft.concat([item]).concat(arrRight);
 
-		let arrTop = detectItem(item, items, 'top', key);
-		let arrBottom = detectItem(item, items, 'bottom', key);
+		let arrTop = detectSameItem(item, items, 'top', key);
+		let arrBottom = detectSameItem(item, items, 'bottom', key);
 		let vArr = arrTop.concat([item]).concat(arrBottom);
 
 		if (hArr.length >= 3) {
@@ -91,7 +109,7 @@ function eliminateSameItems(items, key) {
 	return newItems;
 }
 
-function detectItem(item, items, direction, key, arr) {
+function detectSameItem(item, items, direction, key, arr) {
 	let eArr = arr || [];
 	let targetItem = items.find(function(_item) {
 		switch(direction) {
@@ -110,10 +128,54 @@ function detectItem(item, items, direction, key, arr) {
 	}
 	if (targetItem[key] === item[key]) {
 		eArr.push(targetItem);
-		return detectItem(targetItem, items, direction, key, eArr);
+		return detectSameItem(targetItem, items, direction, key, eArr);
 	} else {
 		return eArr;
 	}
+}
+
+function dropDownItems(items) {
+	let dropRows = [];
+	for(let col = 0; col < itemColNum - 1; itemRowNum ++) {
+		let firstEmptyPosition = detectFirstEmpty(col, 0, items);
+		if (firstEmptyPosition) {
+			if (firstEmptyPosition[1] < itemRowNum - 1) {
+				let firstItemAfterEmpty = detectFirstItemAfterEmpty(firstEmptyPosition[0], firstEmptyPosition[1] + 1, items);
+				dropRow = (firstItemAfterEmpty ? firstItemAfterEmpty[1] : itemRowNum) - firstEmptyPosition[1];
+			} else {
+				dropRow = 1;
+			}
+		} else {
+			dropRow = 0;
+		}
+		dropRows.push({col, dropRow});
+	};
+}
+
+function detectFirstEmpty(col, row, items) {
+	if (row > itemRowNum - 1) {
+		return false;
+	}
+	let targetItem = items.find(function(_item) {
+		return _item.col === col && _item.row === row;
+	});
+	if (!targetItem) {
+		return [col, row];
+	}
+	return detectFirstEmpty(col, row + 1, items);
+}
+
+function detectFirstItemAfterEmpty(col, row, items) {
+	if (row > itemRowNum - 1) {
+		return false;
+	}
+	let targetItem = items.find(function(_item) {
+		return _item.col === col && _item.row === row;
+	});
+	if (targetItem) {
+		return [col, row];
+	}
+	return detectFirstItemAfterEmpty(col, row + 1, items);
 }
 
 let originItems = generateItems();
@@ -150,6 +212,7 @@ export default function itemsInfo(state = itemsInfo, action) {
 		return state.set('dragItem', action.item);
 	case actionTypes.DRAGOVER_ITEM:
 		if (state.get('dragItem')) {
+			//TODO swap result dosen't meet tree eliminate then return *last state*
 			let _items = swapItems(state.get('dragItem'), action.item, state.get('items'));
 			if (!eliminateSameItems(_items)) {
 				return state.set('dragItem', null);
@@ -160,7 +223,7 @@ export default function itemsInfo(state = itemsInfo, action) {
 	case actionTypes.CHECK_ITEMS:
 		let _items = eliminateSameItems(state.get('items'));
 		if (!_items) {
-			return state;
+			return state.set('check', false).set('lock', false);
 		}
 		return state.set('items', _items).set('check', false).set('lock', false);
 	case actionTypes.STOP_DRAG:

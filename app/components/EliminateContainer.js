@@ -8,7 +8,7 @@ require('../styles/animation.less');
 
 let EliminateContainer = React.createClass({
 	componentDidMount() {
-		this.checkEliminate();
+		//this.checkEliminate();
 	},
 	componentDidUpdate() {
 		this.checkEliminate();
@@ -34,6 +34,7 @@ let EliminateContainer = React.createClass({
 						selectItem={this.props.selectItem}
 						dragItem={this.props.dragItem}
 						dragOverItem={this.props.dragOverItem}
+						lock={itemsInfo.get('lock')}
 					/>)}
 				</ReactCSSTransitionGroup>
 			</ul>
