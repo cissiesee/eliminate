@@ -16,7 +16,7 @@ let FirstPage = React.createClass({
 	render() {
 		//console.log('context:', this.context);
 		const actions = this.props.actions;
-		const itemsInfo = this.props.itemsInfo;
+		let itemsInfo = this.props.itemsInfo;
 		return (
 			<div>
 				<h2>Eliminate JS</h2>

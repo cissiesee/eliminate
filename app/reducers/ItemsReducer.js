@@ -1,20 +1,13 @@
 /* app/reducers/items.js */
  
-import Immutable from 'immutable';
-import faker from 'faker';
-import * as actionTypes from '../constants/actionTypes';
+import Immutable from "immutable";
+import faker from "faker";
+import * as actionTypes from "../constants/actionTypes";
 
 const alphabets = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-const colors = ['red', 'yellow', 'blue', 'green', 'orange'];
-let itemColNum = 10;
-let itemRowNum = 10;
-let square = 30;
-let selectItem = null;
-let dragItem = null;
-let lock = true;
-let check = true;
+const colors = ["red", "yellow", "blue", "green", "purple"];
 
-function generateItems() {
+function generateItems(itemColNum, itemRowNum, square) {
 	let items = [];
 	for (let col=0; col < itemColNum; col++) {
 		for (let row=0; row < itemRowNum; row++) {
@@ -134,22 +127,61 @@ function detectSameItem(item, items, direction, key, arr) {
 	}
 }
 
-function dropDownItems(items) {
-	let dropRows = [];
-	for(let col = 0; col < itemColNum - 1; itemRowNum ++) {
-		let firstEmptyPosition = detectFirstEmpty(col, 0, items);
-		if (firstEmptyPosition) {
-			if (firstEmptyPosition[1] < itemRowNum - 1) {
+function calculateDropInfo(items, maxRow, maxCol) {
+	let dropCols = []; //需下降元素填满空位的列s
+	for(let col = 0; col < maxCol - 1; maxRow ++) {
+		let dropStartRow, //空位前最后一个元素的行
+			dropRow, //空位数量
+			firstEmptyPosition = detectFirstEmpty(col, 0, items);
+
+		if (firstEmptyPosition) { //该列有空位
+			dropStartRow = firstEmptyPosition[1] ? firstEmptyPosition[1] - 1 : false;
+			if (firstEmptyPosition[1] < maxRow - 1) { //第一个空位不在底部，继续查找空位后第一个元素
 				let firstItemAfterEmpty = detectFirstItemAfterEmpty(firstEmptyPosition[0], firstEmptyPosition[1] + 1, items);
-				dropRow = (firstItemAfterEmpty ? firstItemAfterEmpty[1] : itemRowNum) - firstEmptyPosition[1];
-			} else {
+				if (!firstItemAfterEmpty) { //空位后无元素
+					dropRow = maxRow - firstEmptyPosition[1] + 1;
+				} else { //空位后有元素
+					dropRow = firstItemAfterEmpty[1] - firstEmptyPosition[1];
+				}
+			} else { //第一个空位在底部
 				dropRow = 1;
 			}
-		} else {
+		} else { //该列无空位
 			dropRow = 0;
 		}
-		dropRows.push({col, dropRow});
-	};
+		if (dropRow) {
+			dropCols.push({col, dropStartRow, dropRow});
+		}
+	}
+
+	return dropCols;
+}
+
+function dropItems(dropCols, items) {
+	dropCols.forEach(function(dropCol) {
+		//有元素需要降落
+		if (dropCol.dropStartRow) {
+			let targetItems = items.find(function(item) {
+				return item.row < dropStartRow;
+			});
+			targetItems.row += dropCol.dropRow;
+		} else {
+
+		}
+	});
+
+	let newItems = items.map(function(item) {
+		let matchCol = dropCols.find(function(dropCol) {
+			dropCol.col === item.col;
+		});
+		if (matchCol) { //元素在有空位的列
+			if (matchCol.dropStartRow && item.row <= matchCol.dropStartRow) { //该元素所在行空位前有元素，且该元素在空位前
+				//处理降落
+				item.row += matchCol.dropRow;
+			}
+			//TODO 处理补位
+		}
+	});
 }
 
 function detectFirstEmpty(col, row, items) {
@@ -178,20 +210,19 @@ function detectFirstItemAfterEmpty(col, row, items) {
 	return detectFirstItemAfterEmpty(col, row + 1, items);
 }
 
-let originItems = generateItems();
-//let newItems = eliminateSameItems(originItems);
 let itemsInfo = Immutable.Map({
-	itemColNum, 
-	itemRowNum, 
-	square, 
-	items: originItems, 
-	selectItem, 
-	dragItem,
-	lock,
-	check
+	itemColNum: 10, 
+	itemRowNum: 10, 
+	square: 30,
+	selectItem: null, 
+	dragItem: null,
+	lock: false,
+	check: false
 });
+let originItems = generateItems(itemsInfo.get("itemColNum"), itemsInfo.get("itemRowNum"), itemsInfo.get("square"));
+let newItemsInfo = itemsInfo.set("items", originItems);
 
-export default function itemsInfo(state = itemsInfo, action) {
+export default function itemsInfo(state = newItemsInfo, action) {
 	switch(action.type) {
 	case actionTypes.ADD_ITEM:
 		//TODO
