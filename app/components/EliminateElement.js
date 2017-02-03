@@ -11,6 +11,7 @@ class EliminateElement extends React.Component {
 				onDragStart={this.dragStartHandler}
 				onMouseEnter={this.mouseEnterHandler}
 				style={{
+					transition: 'all ' + (this.props.animateDuration || 300) + 'ms ease-out',
 					left: item.col * item.square,
 					top: item.row * item.square,
 					background: item.backgroundColor,
@@ -24,16 +25,14 @@ class EliminateElement extends React.Component {
 		);
 	}
 	dragStartHandler=(e)=>{
-		if (this.props.lock) {
-			return;
+		if (this.props.status === 'none') {
+			this.props.dragItem(this.props.item);
 		}
-		this.props.dragItem(this.props.item);
 	}
 	mouseEnterHandler=(e)=>{
-		if (this.props.lock) {
-			return;
+		if (this.props.status === 'dragging') {
+			this.props.dragOverItem(this.props.item);
 		}
-		this.props.dragOverItem(this.props.item);
 	}
 };
 

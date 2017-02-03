@@ -11,3 +11,5 @@ export const DRAGOVER_ITEM = 'DRAGOVER_ITEM';
 export const STOP_DRAG = 'STOP_DRAG';
 export const SWAP_ITEMS = 'SWAP_ITEMS';
 export const CHECK_ITEMS = 'CHECK_ITEMS';
+export const DROP_ITEMS = 'DROP_ITEMS';
+//export const CLEAR_STATUS = 'CLEAR_STATUS';

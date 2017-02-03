@@ -20,12 +20,6 @@ export function deleteItem(item, e) {
 		item
 	};
 }
-export function deleteItems(items, e) {
-	return {
-		type: ActionTypes.DELETE_ITEMS,
-		items
-	};
-}
 export function deleteRow(row, e) {
 	return {
 		type: ActionTypes.DELETE_ROW,
@@ -74,10 +68,18 @@ export function swapItems(items) {
 		items
 	};
 }
-export function checkItems() {
-	return dispatch => {
-		setTimeout(() => dispatch({
-			type: ActionTypes.CHECK_ITEMS
-		}), 500);
+export function deleteItems() {
+	return {
+		type: ActionTypes.DELETE_ITEMS
 	};
 }
+export function dropdownItems() {
+	return {
+		type: ActionTypes.DROP_ITEMS
+	};
+}
+// export function clearStatus() {
+// 	return {
+// 		type: ActionTypes.CLEAR_STATUS
+// 	};
+// }

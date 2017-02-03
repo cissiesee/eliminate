@@ -11,24 +11,16 @@ let FirstPage = React.createClass({
 	mixins: [ImmutableRenderMixin],
 	propTypes: {
 		itemsInfo: React.PropTypes.object,
+		actions: React.PropTypes.object,
 		filter: React.PropTypes.string
 	},
 	render() {
-		//console.log('context:', this.context);
-		const actions = this.props.actions;
-		let itemsInfo = this.props.itemsInfo;
+		let {actions, itemsInfo} = this.props;
+
 		return (
 			<div>
-				<h2>Eliminate JS</h2>
-				<EliminateContainer
-					itemsInfo={itemsInfo}
-					selectItem={actions.selectItem}
-					swapItems={actions.swapItems}
-					dragItem={actions.dragItem}
-					dragOverItem={actions.dragOverItem}
-					stopDrag={actions.stopDrag}
-					checkItems={actions.checkItems}
-				/>
+				<h2>Eliminate JS, status: {itemsInfo.get('status')}</h2>
+				<EliminateContainer itemsInfo={itemsInfo} actions={actions}/>
 			</div>
 		);
 	},

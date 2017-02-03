@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --progress --colors --watch --dev",
+    "start": "webpack-dev-server",
     "build": "webpack",
     "dev": "webpack --progress --colors --watch --dev",
     "dllreact": "webpack --config=dll.react.config.js",

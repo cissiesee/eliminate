@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 
-const vendors = ['faker', 'immutable'];
+const vendors = ['immutable'];
 const exportPath = './build/lib';
 
 module.exports = {

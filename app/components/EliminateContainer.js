@@ -6,70 +6,79 @@ import EliminateElement from './EliminateElement';
 require('../styles/element.less');
 require('../styles/animation.less');
 
+let animateDuration = 300;
+
 let EliminateContainer = React.createClass({
 	componentDidMount() {
 		//this.checkEliminate();
 	},
 	componentDidUpdate() {
-		this.checkEliminate();
+		switch(this.props.itemsInfo.get('status')) {
+		case 'dragged':
+			this.checkEliminate();
+			break;
+		case 'eliminated':
+			this.dropElimentsAfterCheck();
+			break;
+		case 'dropped':
+			this.checkEliminate();
+		}
 	},
 	render() {
 		let itemsInfo = this.props.itemsInfo,
 			items = itemsInfo.get('items');
 
+		let actions = this.props.actions;
+
 		return (
 			<ul className="eleminate-container"
-				onMouseDown={this.mouseDownHandler}
-				onMouseMove={this.mouseMoveHandler}
 				onMouseUp={this.stopDrag}
 				onMouseLeave={this.stopDrag}
 				style={{width: itemsInfo.get("itemColNum") * itemsInfo.get("square"), height: itemsInfo.get("itemRowNum") * itemsInfo.get("square")}}>
 				<ReactCSSTransitionGroup
 	                transitionName="elementShow"
-	                transitionEnterTimeout={300}
-	                transitionLeaveTimeout={300}
+	                transitionEnterTimeout={animateDuration}
+	                transitionLeaveTimeout={animateDuration}
 	                component="div">
 					{items.map(item => <EliminateElement
-						item={item} key={item.id} id={item.id}
-						selectItem={this.props.selectItem}
-						dragItem={this.props.dragItem}
-						dragOverItem={this.props.dragOverItem}
-						lock={itemsInfo.get('lock')}
+						item={item}
+						key={item.id}
+						id={item.id}
+						animateDuration={animateDuration}
+						selectItem={actions.selectItem}
+						dragItem={actions.dragItem}
+						dragOverItem={actions.dragOverItem}
+						status={itemsInfo.get('status')}
 					/>)}
 				</ReactCSSTransitionGroup>
 			</ul>
 		);
 	},
 	checkEliminate() {
-		if (this.props.itemsInfo.get('check')) {
-			this.props.checkItems();
-		}
+		let actions = this.props.actions;
+		setTimeout(()=>{
+			actions.deleteItems();
+		}, animateDuration);
 	},
-	mouseDownHandler() {
-		// let mouseDownPosition = {
-		// 	x:e.nativeEvent.clientX,
-		// 	y:e.nativeEvent.clientY
-		// };
-		this.props.selectItem(this.props.item);
+	dropElimentsAfterCheck() {
+		let actions = this.props.actions;
+		setTimeout(()=>{
+			actions.dropdownItems();
+		}, animateDuration);
 	},
-	mouseMoveHandler() {
-		//this.props.dragItem(this.props.item, e.nativeEvent);
-		// if (this.mouseDownPosition) {
-		// 	// let moveValues = {
-		// 	// 	x: e.nativeEvent.clientX - this.mouseDownPosition.x,
-		// 	// 	y: e.nativeEvent.clientY - this.mouseDownPosition.y
-		// 	// };
-		// 	// if (Math.sqrt(Math.pow(moveValues.x, 2) + Math.pow(moveValues.y, 2))) {
-				
-		// 	// }
-		// 	this.props.dragItem(this.props.item, e.nativeEvent);
-		// }
-	},
+	// clearStatus() {
+	// 	let actions = this.props.actions;
+	// 	setTimeout(()=>{
+	// 		actions.clearStatus();
+	// 	}, animateDuration);
+	// },
 	mouseUpHandler() {
-		this.props.stopDrag(this.props.item);
+		let actions = this.props.actions;
+		this.props.stopDrag();
 	},
 	stopDrag() {
-		this.props.stopDrag(this.props.item);
+		let actions = this.props.actions;
+		actions.stopDrag();
 	}
 });
 
