@@ -75,7 +75,7 @@ function _detectElementAfterEmpty(row, col, items, maxRow) {
 	return _detectElementAfterEmpty(row + 1, col, items, maxRow);
 }
 
-export function generateInitialItems(itemRowNum, itemColNum, square) {
+function generateInitialItems(itemRowNum, itemColNum, square) {
 	let items = [];
 	for (let row = 0; row < itemRowNum; row++) {
 		for (let col = 0; col < itemColNum; col++) {
@@ -107,7 +107,7 @@ export function generateInitialItems(itemRowNum, itemColNum, square) {
 }
 
 //交换元素
-export function swapItems(originItem, destItem, items) {
+function swapItems(originItem, destItem, items) {
 	let newItems = items.map(function(item) {
 		let newItem = Object.assign({}, item);
 		if (item.id === originItem.id) {
@@ -123,7 +123,7 @@ export function swapItems(originItem, destItem, items) {
 }
 
 //核心三消算法
-export function eliminateSameItems(items, key) {
+function eliminateSameItems(items, key) {
 	let eliminateItems = [], newItems = [];
 	key = key || 'backgroundColor';
 	items.forEach(function(item) {
@@ -169,7 +169,7 @@ export function eliminateSameItems(items, key) {
 	return newItems;
 }
 
-export function getDropCols(items, maxRow, maxCol) {
+function getDropCols(items, maxRow, maxCol) {
 	let dropCols = []; //需下降元素填满空位的列s
 	for(let col = 0; col < maxCol; col++) {
 		let emptyArr = []; //空位段数组
@@ -209,7 +209,7 @@ export function getDropCols(items, maxRow, maxCol) {
 	return dropCols;
 }
 
-export function dropItems(dropCols, items) {
+function dropItems(dropCols, items) {
 	let newItems = items.map(function(item) {
 		let matchCol = Utils.findWhere(dropCols, {col: item.col});
 		let newItem = Object.assign({}, item);
@@ -238,3 +238,5 @@ export function dropItems(dropCols, items) {
 	});
 	return newItems;
 }
+
+export default {generateInitialItems, swapItems, eliminateSameItems, getDropCols, dropItems};

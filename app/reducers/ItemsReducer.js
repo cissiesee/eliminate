@@ -2,10 +2,10 @@
  
 import Immutable from 'immutable';
 import * as actionTypes from '../constants/actionTypes';
-import * as itemsHelper from './ItemsHelper';
+import itemsHelper from './ItemsHelper';
 
 let itemsInfo = Immutable.Map({
-	itemColNum: 10, 
+	itemColNum: 10,
 	itemRowNum: 10,
 	square: 30,
 	selectItem: null,

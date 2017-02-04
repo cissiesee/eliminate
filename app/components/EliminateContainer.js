@@ -31,8 +31,8 @@ let EliminateContainer = React.createClass({
 
 		return (
 			<ul className="eleminate-container"
-				onMouseUp={this.stopDrag}
-				onMouseLeave={this.stopDrag}
+				onTouchEnd={this.stopDrag}
+				//onMouseLeave={this.stopDrag}
 				style={{width: itemsInfo.get("itemColNum") * itemsInfo.get("square"), height: itemsInfo.get("itemRowNum") * itemsInfo.get("square")}}>
 				<ReactCSSTransitionGroup
 	                transitionName="elementShow"
@@ -41,6 +41,7 @@ let EliminateContainer = React.createClass({
 	                component="div">
 					{items.map(item => <EliminateElement
 						item={item}
+						draggingItem={itemsInfo.get('dragItem')}
 						key={item.id}
 						id={item.id}
 						animateDuration={animateDuration}

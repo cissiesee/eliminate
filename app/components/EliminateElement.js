@@ -6,10 +6,9 @@ class EliminateElement extends React.Component {
 		return (
 			<div className="eleminate-element"
 				id={this.props.id}
-				draggable="true"
-				onMouseDown={this.props.selectItem.bind(this, item)}
-				onDragStart={this.dragStartHandler}
-				onMouseEnter={this.mouseEnterHandler}
+				onClick={this.props.selectItem.bind(this, item)}
+				onTouchStart={this.dragStartHandler}
+				onTouchMove={this.touchMoveHandler}
 				style={{
 					transition: 'all ' + (this.props.animateDuration || 300) + 'ms ease-out',
 					left: item.col * item.square,
@@ -29,8 +28,10 @@ class EliminateElement extends React.Component {
 			this.props.dragItem(this.props.item);
 		}
 	}
-	mouseEnterHandler=(e)=>{
-		if (this.props.status === 'dragging') {
+	touchMoveHandler=(e)=>{
+		let draggingItem = this.props.draggingItem;
+		let item = this.props.item;
+		if (this.props.status === 'dragging' && draggingItem.id !== item.id) {
 			this.props.dragOverItem(this.props.item);
 		}
 	}
