@@ -1,4 +1,5 @@
 import Utils from '../utils/Utils';
+//import sortedIndexBy from 'lodash/sortedIndexBy';
 
 const alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 const originColors = ['red', 'yellow', 'blue', 'green', 'purple'];
@@ -171,29 +172,40 @@ export function eliminateSameItems(items, key) {
 export function getDropCols(items, maxRow, maxCol) {
 	let dropCols = []; //需下降元素填满空位的列s
 	for(let col = 0; col < maxCol; col++) {
-		let dropStartRow, //空位前最后一个元素的行
-			dropRow, //空位数量
-			firstEmptyPosition = _detectEmptyAfterElement(0, col, items, maxRow);
+		let emptyArr = []; //空位段数组
+		let rowPointer = 0;
 
-		if (firstEmptyPosition) { //该列有空位
-			dropStartRow = firstEmptyPosition.row;
-			if (firstEmptyPosition.row < maxRow - 1) { //第一个空位不在底部，继续查找空位后第一个元素
-				let firstItemAfterEmpty = _detectElementAfterEmpty(firstEmptyPosition.row + 1, firstEmptyPosition.col, items, maxRow);
-				if (!firstItemAfterEmpty) { //空位后无元素
-					dropRow = maxRow - firstEmptyPosition.row + 1;
-				} else { //空位后有元素
-					dropRow = firstItemAfterEmpty.row - firstEmptyPosition.row;
+		while(rowPointer < maxRow) {
+			let firstEmptyPosition = _detectEmptyAfterElement(rowPointer, col, items, maxRow);
+
+			if (firstEmptyPosition) { //该列从指定位置开始有空位
+				//dropStartRow = firstEmptyPosition.row;
+				if (firstEmptyPosition.row < maxRow - 1) { //第一个空位不在底部，继续查找空位后第一个元素
+					let firstItemAfterEmpty = _detectElementAfterEmpty(firstEmptyPosition.row + 1, firstEmptyPosition.col, items, maxRow);
+					if (!firstItemAfterEmpty) { //空位后无元素
+						//dropRow = maxRow - firstEmptyPosition.row + 1;
+						emptyArr.push({
+							start: firstEmptyPosition.row,
+							end: maxRow - 1
+						});
+						break;
+					} else { //空位后有元素
+						emptyArr.push({start: firstEmptyPosition.row, end: firstItemAfterEmpty.row - 1});
+						rowPointer = firstItemAfterEmpty.row + 1;
+					}
+				} else { //第一个空位在底部
+					emptyArr.push({start: firstEmptyPosition.row, end: firstEmptyPosition.row});
+					break;
 				}
-			} else { //第一个空位在底部
-				dropRow = 1;
+			} else { //该列从指定位置开始无空位
+				break;
 			}
-		} else { //该列无空位
-			dropRow = 0;
 		}
-		if (dropRow) {
-			dropCols.push({col, dropStartRow, dropRow});
+		if (emptyArr.length) {
+			dropCols.push({col, emptyArr});
 		}
 	}
+	//console.log(dropCols);
 	return dropCols;
 }
 
@@ -202,9 +214,24 @@ export function dropItems(dropCols, items) {
 		let matchCol = Utils.findWhere(dropCols, {col: item.col});
 		let newItem = Object.assign({}, item);
 		if (matchCol) { //元素在有空位的列
-			if (item.row < matchCol.dropStartRow) { //该元素在空位前
-				//处理降落
-				newItem.row += matchCol.dropRow;
+			let emptyArr = matchCol.emptyArr,
+				emptyGroupLength = emptyArr.length;
+				
+			if (emptyGroupLength > 1) {
+				let index = Utils.sortedIndexBy(emptyArr, {'start': item.row}, 'start');
+
+				if (index < emptyGroupLength) { //该元素在空位前
+					let emptySum = 0;
+					for(let i = index; i < emptyGroupLength; i++) {
+						emptySum += matchCol.emptyArr[i].end - matchCol.emptyArr[i].start + 1;
+					}
+					//处理降落
+					newItem.row += emptySum;
+				}
+			} else if (emptyGroupLength === 1) {
+				if (item.row < emptyArr[0].start) {
+					newItem.row += emptyArr[0].end - emptyArr[0].start + 1;
+				}
 			}
 		}
 		return newItem;

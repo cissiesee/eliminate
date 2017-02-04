@@ -15,13 +15,12 @@ let EliminateContainer = React.createClass({
 	componentDidUpdate() {
 		switch(this.props.itemsInfo.get('status')) {
 		case 'dragged':
+		case 'dropped':
 			this.checkEliminate();
 			break;
 		case 'eliminated':
 			this.dropElimentsAfterCheck();
 			break;
-		case 'dropped':
-			this.checkEliminate();
 		}
 	},
 	render() {
