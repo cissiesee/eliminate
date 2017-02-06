@@ -110,10 +110,10 @@ function generateInitialItems(itemRowNum, itemColNum, square) {
 function swapItems(originItem, destItem, items) {
 	let newItems = items.map(function(item) {
 		let newItem = Object.assign({}, item);
-		if (item.id === originItem.id) {
+		if (item.col === originItem.col && item.row === originItem.row) {
 			newItem.row = destItem.row;
 			newItem.col = destItem.col;
-		} else if (item.id === destItem.id) {
+		} else if (item.col === destItem.col && item.row === destItem.row) {
 			newItem.row = originItem.row;
 			newItem.col = originItem.col;
 		}

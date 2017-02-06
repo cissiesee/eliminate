@@ -28,6 +28,7 @@ export default function itemsInfo(state = newItemsInfo, action) {
 		if (state.get('dragItem')) {
 			//TODO swap result dosen't meet tree eliminate then return *last state*
 			let _items = itemsHelper.swapItems(state.get('dragItem'), action.item, state.get('items'));
+			console.log(_items);
 			if (!itemsHelper.eliminateSameItems(_items)) {
 				return state.set('dragItem', null).set('status', 'none');
 			}

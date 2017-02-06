@@ -36,17 +36,18 @@ var plugins = [
 	new HtmlWebpackPlugin({
 		filename: path.resolve(__dirname, './build/index.html'),
 		template: path.resolve(__dirname, './app/tpl/index.html')
-	})/*,
+	}),
 	new BrowserSyncPlugin({  
 		// browse to http://localhost:3000/ during development
 		host: '0.0.0.0',
-		port: 3000, //代理后访问的端口
-		proxy: 'localhost:8080',//要代理的端口
+		port: 3456, //代理后访问的端口
+		server: { baseDir: ['build'] }
+		//proxy: 'localhost:8080',//要代理的端口
 	}, {
 		// prevent BrowserSync from reloading the page
         // and let Webpack Dev Server take care of this
 		reload: true
-	})*/
+	})
 ];
 
 if (!isDev) {
