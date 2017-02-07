@@ -19,7 +19,7 @@ let FirstPage = React.createClass({
 
 		return (
 			<div>
-				<h2>Eliminate JS, status: {itemsInfo.get('status')}</h2>
+				<h2>Eliminate JS</h2>
 				<EliminateContainer itemsInfo={itemsInfo} actions={actions}/>
 			</div>
 		);

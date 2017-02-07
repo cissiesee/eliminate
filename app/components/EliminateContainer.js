@@ -6,20 +6,26 @@ import EliminateElement from './EliminateElement';
 require('../styles/element.less');
 require('../styles/animation.less');
 
-let animateDuration = 300;
+let swapDuration = 200, eliminateDuration = 200, dropDownDuration = 300;
 
 let EliminateContainer = React.createClass({
 	componentDidMount() {
 		//this.checkEliminate();
 	},
+	componentWillUpdate() {
+		clearTimeout(this.eliminateTimer);
+		clearTimeout(this.dropElementsTimer);
+	},
 	componentDidUpdate() {
 		switch(this.props.itemsInfo.get('status')) {
 		case 'dragged':
+			this.checkEliminate(swapDuration);
+			break;
 		case 'dropped':
-			this.checkEliminate();
+			this.checkEliminate(dropDownDuration);
 			break;
 		case 'eliminated':
-			this.dropElimentsAfterCheck();
+			this.dropElementsAfterCheck();
 			break;
 		}
 	},
@@ -36,15 +42,17 @@ let EliminateContainer = React.createClass({
 				style={{width: itemsInfo.get("itemColNum") * itemsInfo.get("square"), height: itemsInfo.get("itemRowNum") * itemsInfo.get("square")}}>
 				<ReactCSSTransitionGroup
 	                transitionName="elementShow"
-	                transitionEnterTimeout={animateDuration}
-	                transitionLeaveTimeout={animateDuration}
+	                transitionEnterTimeout={eliminateDuration}
+	                transitionLeaveTimeout={eliminateDuration}
 	                component="div">
 					{items.map(item => <EliminateElement
 						item={item}
 						draggingItem={itemsInfo.get('dragItem')}
 						key={item.id}
 						id={item.id}
-						animateDuration={animateDuration}
+						swapDuration={swapDuration}
+						eliminateDuration={eliminateDuration}
+						dropDownDuration={dropDownDuration}
 						selectItem={actions.selectItem}
 						dragItem={actions.dragItem}
 						dragOverItem={actions.dragOverItem}
@@ -54,17 +62,17 @@ let EliminateContainer = React.createClass({
 			</ul>
 		);
 	},
-	checkEliminate() {
+	checkEliminate(duration) {
 		let actions = this.props.actions;
-		setTimeout(()=>{
+		this.eliminateTimer = setTimeout(()=>{
 			actions.deleteItems();
-		}, animateDuration);
+		}, duration);
 	},
-	dropElimentsAfterCheck() {
+	dropElementsAfterCheck() {
 		let actions = this.props.actions;
-		setTimeout(()=>{
+		this.dropElementsTimer = setTimeout(()=>{
 			actions.dropdownItems();
-		}, animateDuration);
+		}, eliminateDuration);
 	},
 	// clearStatus() {
 	// 	let actions = this.props.actions;

@@ -4,7 +4,7 @@ import DomUtils from '../utils/DomUtils';
 //console.log('element style:', style);
 class EliminateElement extends React.Component {
 	render() {
-		var item = this.props.item;
+		let item = this.props.item;
 		return (
 			<div className="eleminate-element"
 				id={this.props.id}
@@ -12,7 +12,7 @@ class EliminateElement extends React.Component {
 				onTouchStart={this.touchStartHandler}
 				onTouchMove={this.touchMoveHandler}
 				style={{
-					transition: 'all ' + (this.props.animateDuration || 300) + 'ms ease-out',
+					transition: this.getTransition(this.props.status),
 					left: item.col * item.square,
 					top: item.row * item.square,
 					background: item.backgroundColor,
@@ -24,6 +24,24 @@ class EliminateElement extends React.Component {
 				{item.text}
 			</div>
 		);
+	}
+	getTransition(status) {
+		let swapDuration = this.props.swapDuration,
+			eliminateDuration = this.props.eliminateDuration,
+			dropDownDuration = this.props.dropDownDuration;
+
+		let dropDelay = this.props.item.dropDelay * 10;
+
+		switch(status) {
+		case 'dragged':
+			return `all ${swapDuration}ms ease-in`;
+		case 'eliminated':
+			return `all ${eliminateDuration}ms ease-out`;
+		case 'dropped':
+			return `all ${dropDownDuration}ms ease-out ${dropDelay}ms`;
+		default:
+			return '';
+		}
 	}
 	touchStartHandler=(e)=>{
 		if (this.props.status === 'none') {

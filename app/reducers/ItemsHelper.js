@@ -213,6 +213,7 @@ function dropItems(dropCols, items) {
 	let newItems = items.map(function(item) {
 		let matchCol = Utils.findWhere(dropCols, {col: item.col});
 		let newItem = Object.assign({}, item);
+		newItem.dropDelay = 0;
 		if (matchCol) { //元素在有空位的列
 			let emptyArr = matchCol.emptyArr,
 				emptyGroupLength = emptyArr.length;
@@ -226,10 +227,12 @@ function dropItems(dropCols, items) {
 						emptySum += matchCol.emptyArr[i].end - matchCol.emptyArr[i].start + 1;
 					}
 					//处理降落
+					newItem.dropDelay = emptyArr[index].start - newItem.row - 1;
 					newItem.row += emptySum;
 				}
 			} else if (emptyGroupLength === 1) {
 				if (item.row < emptyArr[0].start) {
+					newItem.dropDelay = emptyArr[0].start - newItem.row - 1;
 					newItem.row += emptyArr[0].end - emptyArr[0].start + 1;
 				}
 			}

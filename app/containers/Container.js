@@ -22,6 +22,9 @@ let Container = React.createClass({
 		document.body.onselect = (ev) => {
 			ev.preventDefault();
 		};
+		window.onerror = function(msg, url, line) {
+			alert(`error! url: ${url}, line: ${line}, msg: ${msg}`);
+		};
 	},
 	render() {
 		//console.log(this.props.location.pathname, ',', this.props.location.action);
