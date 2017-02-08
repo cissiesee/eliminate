@@ -12,14 +12,14 @@ import { Router, Route, hashHistory, IndexRoute } from 'react-router';
 const store = configureStore();
 
 ReactDom.render(
-	<Provider store={store}>
-		<Router history={hashHistory}>
-			<Route path="/" component={Container}>
-				<IndexRoute component={FirstPage} />
-				<Route path="/index" component={FirstPage}/>
-				<Route path="/second" component={SecondPage}/>
-				<Route path="/third" component={ThirdPage}/>
-			</Route>
-		</Router>
-	</Provider>,
+    <Provider store={store}>
+        <Router history={hashHistory}>
+            <Route path="/" component={Container}>
+                <IndexRoute component={FirstPage} />
+                <Route path="/index" component={FirstPage}/>
+                <Route path="/second" component={SecondPage}/>
+                <Route path="/third" component={ThirdPage}/>
+            </Route>
+        </Router>
+    </Provider>,
     document.getElementById('app'));

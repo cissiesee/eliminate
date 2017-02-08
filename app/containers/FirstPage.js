@@ -8,29 +8,29 @@ import * as ItemsActions from '../actions/ItemsAction'; //action
 import EliminateContainer from '../components/EliminateContainer'; //root component
  
 let FirstPage = React.createClass({
-	mixins: [ImmutableRenderMixin],
-	propTypes: {
-		itemsInfo: React.PropTypes.object,
-		actions: React.PropTypes.object,
-		filter: React.PropTypes.string
-	},
-	render() {
-		let {actions, itemsInfo} = this.props;
+    mixins: [ImmutableRenderMixin],
+    propTypes: {
+        itemsInfo: React.PropTypes.object,
+        actions: React.PropTypes.object,
+        filter: React.PropTypes.string
+    },
+    render() {
+        let {actions, itemsInfo} = this.props;
 
-		return (
-			<div>
-				<h2>Eliminate JS</h2>
-				<EliminateContainer itemsInfo={itemsInfo} actions={actions}/>
-			</div>
-		);
-	},
-	toNextPage() {
-		hashHistory.push('/second');
-	}
+        return (
+            <div>
+                <h2>Eliminate JS</h2>
+                <EliminateContainer itemsInfo={itemsInfo} actions={actions}/>
+            </div>
+        );
+    },
+    toNextPage() {
+        hashHistory.push('/second');
+    }
 });
 
 export default connect(state => ({
-	itemsInfo: state.itemsInfo
+    itemsInfo: state.itemsInfo
 }), dispatch => ({
-	actions: bindActionCreators(ItemsActions, dispatch)
+    actions: bindActionCreators(ItemsActions, dispatch)
 }))(FirstPage);
