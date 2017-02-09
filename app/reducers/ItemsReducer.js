@@ -10,10 +10,12 @@ let itemsInfo = Immutable.Map({
     square: 30,
     selectItem: null,
     dragItem: null,
-    status: 'none' //'dragging,'dragged','eliminated','dropped'
+    status: 'none', //'dragging,'dragged','eliminated','dropped'
+    grid: null
 });
 let originItems = itemsHelper.generateInitialItems(itemsInfo.get('itemRowNum'), itemsInfo.get('itemColNum'), itemsInfo.get('square'));
-let newItemsInfo = itemsInfo.set('items', originItems);
+let grid = itemsHelper.generateGrid(itemsInfo.get('itemRowNum'), itemsInfo.get('itemColNum'), itemsInfo.get('square'));
+let newItemsInfo = itemsInfo.set('items', originItems).set('grid', grid);
 
 export default function itemsInfo(state = newItemsInfo, action) {
     switch(action.type) {
@@ -44,13 +46,16 @@ export default function itemsInfo(state = newItemsInfo, action) {
         if (!itemsAfterDel) {
             return state.set('status', 'none');
         }
-        return state.set('items', itemsAfterDel).set('status', 'eliminated');
+        let newGridAfterDel = itemsHelper.activateGridCell(state.get('grid'), itemsAfterDel.eliminateItems);
+        return state.set('items', itemsAfterDel.newItems).set('status', 'eliminated').set('grid', newGridAfterDel);
     case actionTypes.DROP_ITEMS:
         let dropCols = itemsHelper.getDropCols(state.get('items'), state.get('itemRowNum'), state.get('itemColNum'));
         let newState = state;
         if (dropCols && dropCols.length) {
             let itemsAfterDrop = itemsHelper.dropItems(dropCols, state.get('items'));
-            newState = state.set('items', itemsAfterDrop);
+            let maxDropdownRows = itemsHelper.getMaxByKey(itemsAfterDrop, 'dropdownRows');
+            let maxDelay = itemsHelper.getMaxByKey(itemsAfterDrop, 'dropDelay');
+            newState = state.set('items', itemsAfterDrop).set('maxDropdownRows', maxDropdownRows).set('maxDelay', maxDelay);
         }
         return newState.set('status', 'dropped');
     case actionTypes.SELECT_ITEM:

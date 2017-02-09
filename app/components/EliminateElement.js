@@ -1,10 +1,20 @@
 import React from 'react';
+import { findDOMNode } from 'react-dom';
 import DomUtils from '../utils/DomUtils';
+
+let offset = 1;
 
 //console.log('element style:', style);
 class EliminateElement extends React.Component {
+    // componentDidMount() {
+    //     this.updateTransform();
+    // }
+    // componentDidUpdate(prevProps, prevState) {
+    //     this.updateTransform();
+    // }
     render() {
         let item = this.props.item;
+        //let square = item.square - offset * 2;
         return (
             <div className="eleminate-element"
                 id={this.props.id}
@@ -12,10 +22,11 @@ class EliminateElement extends React.Component {
                 onTouchStart={this.touchStartHandler}
                 onTouchMove={this.touchMoveHandler}
                 style={{
-                    transition: this.getTransition(this.props.status),
+                    transition: 'all 300ms ease-out',//this.getTransition(this.props.status),
                     transform: `translate(${item.col * item.square}px, ${item.row * item.square}px)`,
                     background: item.backgroundColor,
                     color: item.fontColor,
+                    borderRadius: item.square / 2,
                     width: item.square,
                     height: item.square,
                     lineHeight: item.square + 'px'
@@ -25,22 +36,29 @@ class EliminateElement extends React.Component {
         );
     }
     getTransition(status) {
-        let swapDuration = this.props.swapDuration,
+        let item = this.props.item,
+            swapDuration = this.props.swapDuration,
             eliminateDuration = this.props.eliminateDuration,
-            dropDownDuration = this.props.dropDownDuration;
+            dropDelayTime = this.props.dropDelayTime,
+            dropDownDuration = this.props.dropDownDurationPerGrid * (item.dropdownRows || 0);
 
-        let dropDelay = (this.props.item.dropDelay || 0) * 10;
+        let dropDelay = (this.props.item.dropDelay || 0) * dropDelayTime;
 
-        let transitionStr = `opacity ${eliminateDuration}ms ease-out`;
+        let transitionStr = `all ${eliminateDuration}ms ease-out`;
 
         switch(status) {
-        case 'dragged':
-            return `${transitionStr}, transform ${swapDuration}ms ease-in`;
         case 'dropped':
-            return `${transitionStr}, transform ${dropDownDuration}ms cubic-bezier(1, 0.005, 0.620, 1.240) ${dropDelay}ms`;
+            return `transform ${dropDownDuration}ms cubic-bezier(1, 0.005, 0.620, 1.240) ${dropDelay}ms`;
         default:
             return transitionStr;
         }
+    }
+    updateTransform(delay) {
+        let item = this.props.item;
+        setTimeout(()=>{
+            let dom = findDOMNode(this);
+            dom.style.transform = `translate(${item.col * item.square}px, ${item.row * item.square}px)`;
+        }, delay || 100);
     }
     touchStartHandler=(e)=>{
         if (this.props.status === 'none') {

@@ -1,3 +1,5 @@
+import max from 'lodash/max';
+
 let idCounter = 0;
 
 function randomArray(arr) {
@@ -111,4 +113,4 @@ function isInRange(range, num) {
 // var index = sortedIndexBy([{start: 3, end: 3}, {start: 5, end: 7}, {start: 9, end: 9}], {start: 4}, 'start');
 // console.log(index);
 
-export default {randomArray, findWhere, uniqueId, isInRange, sortedIndexBy};
+export default {randomArray, findWhere, uniqueId, isInRange, sortedIndexBy, max};

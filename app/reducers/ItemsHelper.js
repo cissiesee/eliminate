@@ -75,6 +75,35 @@ function _detectElementAfterEmpty(row, col, items, maxRow) {
     return _detectElementAfterEmpty(row + 1, col, items, maxRow);
 }
 
+function _resetItem(item) {
+    let newItem = Object.assign({}, item);
+    return Object.assign(newItem, {
+        dropDelay: 0,
+        dropdownRows: 0
+    });
+}
+
+function generateGrid(itemRowNum, itemColNum, square) {
+    let cells = [];
+    for (let row = 0; row < itemRowNum; row++) {
+        for (let col = 0; col < itemColNum; col++) {
+            let borderWidth = '1px 0 0 1px', borderRightWidth='0px', borderBottomWidth='0px';
+            if (col === itemColNum - 1) {
+                borderRightWidth = '1px';
+            }
+            if (row === itemRowNum - 1) {
+                borderBottomWidth = '1px';
+            }
+            cells.push({
+                row,
+                col,
+                coverLevel: Utils.randomArray([0, 1, 2])
+            });
+        }
+    }
+    return cells;
+}
+
 function generateInitialItems(itemRowNum, itemColNum, square) {
     let items = [];
     for (let row = 0; row < itemRowNum; row++) {
@@ -154,7 +183,8 @@ function eliminateSameItems(items, key) {
         items.forEach(function(item) {
             let targetItem = Utils.findWhere(eliminateItems, {row: item.row, col: item.col});
             if (!targetItem) { //不是待消除元素则保留该元素
-                newItems.push(item);
+                let newItem = _resetItem(item);
+                newItems.push(newItem);
             } else { //是待消除元素则在该列顶部补位
                 newItems.push(_getRandomElement({
                     row: _getSupplementRowIndex(newItems, item.col),
@@ -166,7 +196,7 @@ function eliminateSameItems(items, key) {
     } else {
         return false;
     }
-    return newItems;
+    return {newItems, eliminateItems};
 }
 
 function getDropCols(items, maxRow, maxCol) {
@@ -228,12 +258,14 @@ function dropItems(dropCols, items) {
                     }
                     //处理降落
                     newItem.dropDelay = emptyArr[index].start - newItem.row - 1;
+                    newItem.dropdownRows = emptySum;
                     newItem.row += emptySum;
                 }
             } else if (emptyGroupLength === 1) {
                 if (item.row < emptyArr[0].start) {
                     newItem.dropDelay = emptyArr[0].start - newItem.row - 1;
                     newItem.row += emptyArr[0].end - emptyArr[0].start + 1;
+                    newItem.dropdownRows = 1;
                 }
             }
         }
@@ -242,4 +274,26 @@ function dropItems(dropCols, items) {
     return newItems;
 }
 
-export default {generateInitialItems, swapItems, eliminateSameItems, getDropCols, dropItems};
+function getMaxByKey(items, key) {
+    let arr = items.map(function(item) {
+        return key ? item[key] : item;
+    });
+
+    return Utils.max(arr);
+}
+
+function activateGridCell(grid, deleteItems) {
+    let newGrid = grid.map((cell)=>{
+        let newCell = cell;
+        if (cell.coverLevel) {
+            let targetItem = Utils.findWhere(deleteItems, {row: cell.row, col: cell.col});
+            if (targetItem) {
+                newCell = Object.assign({}, cell, {coverLevel: cell.coverLevel - 1});
+            }
+        }
+        return newCell;
+    });
+    return newGrid;
+}
+
+export default {generateGrid, generateInitialItems, swapItems, eliminateSameItems, getDropCols, dropItems, getMaxByKey, activateGridCell};
