@@ -151,32 +151,41 @@ function swapItems(originItem, destItem, items) {
     return newItems;
 }
 
+function _detectSameItemsByItem(items, targetItem, key) {
+    let arr = [];
+
+    let arrRight = _detectSameItem(targetItem, items, 'right', key);
+    let arrLeft = _detectSameItem(targetItem, items, 'left', key);
+    let hArr = arrLeft.concat([targetItem]).concat(arrRight);
+
+    let arrTop = _detectSameItem(targetItem, items, 'top', key);
+    let arrBottom = _detectSameItem(targetItem, items, 'bottom', key);
+    let vArr = arrTop.concat([targetItem]).concat(arrBottom);
+
+    if (hArr.length >= 3) {
+        arr = arr.concat(hArr);
+        //console.log('item:', item, ',', 'horizontal must be eliminate ' + hArr.length);
+    }
+
+    if (vArr.length >= 3) {
+        arr = arr.concat(vArr);
+        //console.log('item:', item, ',', 'vertical must be eliminate ' + vArr.length);
+    }
+
+    return arr;
+}
+
 //核心三消算法
-function eliminateSameItems(items, key) {
+function eliminateSameItems(items, targetItems, key) {
     let eliminateItems = [], newItems = [];
     key = key || 'backgroundColor';
-    items.forEach(function(item) {
+    (targetItems || items).forEach(function(item) {
         if (Utils.findWhere(eliminateItems, {row: item.row, col: item.col})) {
             //已通过之前的递归算法将该元素收入待消除队列，则无需再次递归计算
             return;
         }
-        let arrRight = _detectSameItem(item, items, 'right', key);
-        let arrLeft = _detectSameItem(item, items, 'left', key);
-        let hArr = arrLeft.concat([item]).concat(arrRight);
-
-        let arrTop = _detectSameItem(item, items, 'top', key);
-        let arrBottom = _detectSameItem(item, items, 'bottom', key);
-        let vArr = arrTop.concat([item]).concat(arrBottom);
-
-        if (hArr.length >= 3) {
-            eliminateItems = eliminateItems.concat(hArr);
-            //console.log('item:', item, ',', 'horizontal must be eliminate ' + hArr.length);
-        }
-
-        if (vArr.length >= 3) {
-            eliminateItems = eliminateItems.concat(vArr);
-            //console.log('item:', item, ',', 'vertical must be eliminate ' + vArr.length);
-        }
+        let arr = _detectSameItemsByItem(items, (item[key] ? item : Utils.findWhere(items, item)), key);
+        eliminateItems.concat(arr);
     });
     //console.log(eliminateItems);
     if (eliminateItems.length) {

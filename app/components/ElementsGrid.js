@@ -22,8 +22,9 @@ let ElementsGrid = React.createClass({
                         height: square,
                         borderWidth: borderWidth,
                         borderRightWidth: borderRightWidth,
-                        borderBottomWidth: borderBottomWidth,
-                        backgroundColor: `rgba(255,255,255,${coverLevel * 0.3})`
+                        borderBottomWidth: borderBottomWidth
+                        // background: '#fff',
+                        // opacity: coverLevel * 0.3
                     }}>
                 </div>
             );

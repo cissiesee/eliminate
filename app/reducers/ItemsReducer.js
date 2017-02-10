@@ -27,13 +27,17 @@ export default function itemsInfo(state = newItemsInfo, action) {
     case actionTypes.DRAG_ITEM:
         return state.set('dragItem', action.item).set('status', 'dragging');
     case actionTypes.DRAGOVER_ITEM:
-        if (state.get('dragItem')) {
+        let dragItem = state.get('dragItem');
+        if (dragItem) {
             //TODO swap result dosen't meet tree eliminate then return *last state*
-            let _items = itemsHelper.swapItems(state.get('dragItem'), action.item, state.get('items'));
-            if (!itemsHelper.eliminateSameItems(_items)) {
+            let _items = itemsHelper.swapItems(dragItem, action.item, state.get('items'));
+            if (!itemsHelper.eliminateSameItems(_items, [action.item, dragItem])) {
                 return state.set('dragItem', null).set('status', 'none');
             }
-            return state.set('items', _items).set('dragItem', null).set('status', 'dragged');
+            return state.set('items', _items)
+                        .set('dragItem', null)
+                        .set('swapItems', [dragItem, action.item])
+                        .set('status', 'dragged');
         }
         return state;
     case actionTypes.STOP_DRAG:
@@ -42,12 +46,12 @@ export default function itemsInfo(state = newItemsInfo, action) {
         }
         return state;
     case actionTypes.DELETE_ITEMS:
-        let itemsAfterDel = itemsHelper.eliminateSameItems(state.get('items'));
+        let itemsAfterDel = itemsHelper.eliminateSameItems(state.get('items'), state.get('swapItems'));
         if (!itemsAfterDel) {
-            return state.set('status', 'none');
+            return state.set('swapItems', null).set('status', 'none');
         }
         let newGridAfterDel = itemsHelper.activateGridCell(state.get('grid'), itemsAfterDel.eliminateItems);
-        return state.set('items', itemsAfterDel.newItems).set('status', 'eliminated').set('grid', newGridAfterDel);
+        return state.set('items', itemsAfterDel.newItems).set('swapItems', null).set('status', 'eliminated').set('grid', newGridAfterDel);
     case actionTypes.DROP_ITEMS:
         let dropCols = itemsHelper.getDropCols(state.get('items'), state.get('itemRowNum'), state.get('itemColNum'));
         let newState = state;
@@ -55,7 +59,10 @@ export default function itemsInfo(state = newItemsInfo, action) {
             let itemsAfterDrop = itemsHelper.dropItems(dropCols, state.get('items'));
             let maxDropdownRows = itemsHelper.getMaxByKey(itemsAfterDrop, 'dropdownRows');
             let maxDelay = itemsHelper.getMaxByKey(itemsAfterDrop, 'dropDelay');
-            newState = state.set('items', itemsAfterDrop).set('maxDropdownRows', maxDropdownRows).set('maxDelay', maxDelay);
+            newState = state
+                .set('items', itemsAfterDrop)
+                .set('maxDropdownRows', maxDropdownRows)
+                .set('maxDelay', maxDelay);
         }
         return newState.set('status', 'dropped');
     case actionTypes.SELECT_ITEM:
