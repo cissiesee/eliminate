@@ -8,20 +8,30 @@ import EliminateElement from './EliminateElement';
 require('../styles/element.less');
 require('../styles/animation.less');
 
-let swapDuration = 200, eliminateDuration = 100, dropDownDurationPerGrid = 300, dropDelayTime = 10, animateDuration = 300;
+let swapDuration = 200,
+    eliminateDuration = 100,
+    dropDownDurationPerGrid = 300,
+    dropDelayTime = 10,
+    animateDuration = 300;
+
+let offset = {
+    left: 30,
+    right: 30
+};
+
 
 let EliminateContainer = React.createClass({
     componentDidMount() {
         //this.checkEliminate();
     },
-    componentWillUpdate() {
+    componentWillUpdate(nextProps) {
         clearTimeout(this.eliminateTimer);
         clearTimeout(this.dropElementsTimer);
     },
     componentDidUpdate() {
         let itemsInfo = this.props.itemsInfo;
         switch(itemsInfo.get('status')) {
-        case 'dragged':
+        case 'swapped':
             this.checkEliminate(animateDuration);
             break;
         case 'dropped':
@@ -38,11 +48,17 @@ let EliminateContainer = React.createClass({
 
         let actions = this.props.actions;
 
+        let square = (document.body.clientWidth - offset.left - offset.right) / itemsInfo.get('itemColNum');
+
         return (
             <div className="eleminate-container"
                 onTouchEnd={this.stopDrag}
                 //onMouseLeave={this.stopDrag}
-                style={{width: itemsInfo.get('itemColNum') * itemsInfo.get('square'), height: itemsInfo.get('itemRowNum') * itemsInfo.get('square')}}>
+                style={{
+                    width: itemsInfo.get('itemColNum') * square,
+                    height: itemsInfo.get('itemRowNum') * square,
+                    left: offset.left
+                }}>
                 <ReactCSSTransitionGroup
                     transitionName="elementShow"
                     transitionEnterTimeout={eliminateDuration}
@@ -50,9 +66,9 @@ let EliminateContainer = React.createClass({
                     component="div">
                     {items.map(item => <EliminateElement
                         item={item}
-                        draggingItem={itemsInfo.get('dragItem')}
                         key={item.id}
                         id={item.id}
+                        square={square}
                         swapDuration={swapDuration}
                         eliminateDuration={eliminateDuration}
                         dropDownDurationPerGrid={dropDownDurationPerGrid}
@@ -67,7 +83,7 @@ let EliminateContainer = React.createClass({
                 <ElementsGrid
                     colNum={itemsInfo.get('itemColNum')}
                     rowNum={itemsInfo.get('itemRowNum')}
-                    square={itemsInfo.get('square')}
+                    square={square}
                     grid={itemsInfo.get('grid')}
                 />
             </div>
@@ -84,16 +100,6 @@ let EliminateContainer = React.createClass({
         this.dropElementsTimer = setTimeout(()=>{
             actions.dropdownItems();
         }, eliminateDuration);
-    },
-    // clearStatus() {
-    //  let actions = this.props.actions;
-    //  setTimeout(()=>{
-    //      actions.clearStatus();
-    //  }, animateDuration);
-    // },
-    mouseUpHandler() {
-        let actions = this.props.actions;
-        this.props.stopDrag();
     },
     stopDrag() {
         let actions = this.props.actions;

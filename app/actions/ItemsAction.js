@@ -68,9 +68,10 @@ export function swapItems(items) {
         items
     };
 }
-export function deleteItems() {
+export function deleteItems(opts) {
     return {
-        type: ActionTypes.DELETE_ITEMS
+        type: ActionTypes.DELETE_ITEMS,
+        opts
     };
 }
 export function dropdownItems() {

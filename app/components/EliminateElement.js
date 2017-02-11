@@ -9,11 +9,20 @@ class EliminateElement extends React.Component {
     // componentDidMount() {
     //     this.updateTransform();
     // }
-    // componentDidUpdate(prevProps, prevState) {
-    //     this.updateTransform();
-    // }
+    componentDidUpdate(prevProps, prevState) {
+    	//计算中心位置
+    	let item = this.props.item;
+    	let square = this.props.square;
+    	let dom = findDOMNode(this);
+        let position = DomUtils.getAbsEleClientPostion(dom, {
+            x: item.col * square,
+            y: item.row * square
+        });
+        this.center = {x: position.x + square / 2, y: position.y + square / 2};
+    }
     render() {
         let item = this.props.item;
+        let square = this.props.square;
         //let square = item.square - offset * 2;
         return (
             <div className="eleminate-element"
@@ -22,14 +31,14 @@ class EliminateElement extends React.Component {
                 onTouchStart={this.touchStartHandler}
                 onTouchMove={this.touchMoveHandler}
                 style={{
-                    transition: 'all 300ms ease-out',//this.getTransition(this.props.status),
-                    transform: `translate(${item.col * item.square}px, ${item.row * item.square}px)`,
+                    transition: `all ${this.props.animateDuration}ms ease-out`,//this.getTransition(this.props.status),
+                    transform: `translate(${item.col * square}px, ${item.row * square}px)`,
                     background: item.backgroundColor,
                     color: item.fontColor,
-                    borderRadius: item.square / 2,
-                    width: item.square,
-                    height: item.square,
-                    lineHeight: item.square + 'px'
+                    borderRadius: square / 2,
+                    width: square,
+                    height: square,
+                    lineHeight: square + 'px'
                 }}>
                 {item.text}
             </div>
@@ -53,39 +62,27 @@ class EliminateElement extends React.Component {
             return transitionStr;
         }
     }
-    updateTransform(delay) {
-        let item = this.props.item;
-        setTimeout(()=>{
-            let dom = findDOMNode(this);
-            dom.style.transform = `translate(${item.col * item.square}px, ${item.row * item.square}px)`;
-        }, delay || 100);
-    }
     touchStartHandler=(e)=>{
         if (this.props.status === 'none') {
-            let event = e.nativeEvent, targetTouches = event.targetTouches;
-            let touchItem = Object.assign({}, this.props.item);
-            let position = DomUtils.getAbsEleClientPostion(event.target, {
-                x: touchItem.col * touchItem.square,
-                y: touchItem.row * touchItem.square
-            });
-            touchItem.center = {x: position.x + touchItem.square / 2, y: position.y + touchItem.square / 2};
-            //touchItem.touchPosition = {x: targetTouches[0].clientX, y: targetTouches[0].clientY};
-            this.props.dragItem(touchItem);
+            let item = this.props.item;
+            this.props.dragItem(item);
         }
     }
     touchMoveHandler=(e)=>{
         if (this.props.status === 'dragging') {
             let item = this.props.item;
+            let square = this.props.square;
             let event = e.nativeEvent, targetTouches = event.targetTouches;
             let position = targetTouches[0];
-            let draggingItem = this.props.draggingItem, draggingItemCenter = draggingItem.center;
 
-            let diffX = position.clientX - draggingItemCenter.x, diffY = position.clientY - draggingItemCenter.y;
+            let diffX = position.clientX - this.center.x, diffY = position.clientY - this.center.y;
 
             let distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
             let angle = Math.atan2(-diffY, diffX);
 
-            if (distance > item.square / 2) {
+        	//console.log(distance, angle);
+
+            if (distance > square / 2) {
                 //console.log(diffX, ',', -diffY, ',', angle);
                 let dragOverItem = {row: item.row, col: item.col};
                 if (angle > -Math.PI / 4 && angle < Math.PI / 4) { //to right

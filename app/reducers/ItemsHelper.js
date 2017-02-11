@@ -76,14 +76,14 @@ function _detectElementAfterEmpty(row, col, items, maxRow) {
 }
 
 function _resetItem(item) {
-    let newItem = Object.assign({}, item);
-    return Object.assign(newItem, {
+    return Object.assign({}, item, {
         dropDelay: 0,
-        dropdownRows: 0
+        dropdownRows: 0,
+        add: false
     });
 }
 
-function generateGrid(itemRowNum, itemColNum, square) {
+function generateGrid(itemRowNum, itemColNum) {
     let cells = [];
     for (let row = 0; row < itemRowNum; row++) {
         for (let col = 0; col < itemColNum; col++) {
@@ -104,7 +104,7 @@ function generateGrid(itemRowNum, itemColNum, square) {
     return cells;
 }
 
-function generateInitialItems(itemRowNum, itemColNum, square) {
+function generateInitialItems(itemRowNum, itemColNum) {
     let items = [];
     for (let row = 0; row < itemRowNum; row++) {
         for (let col = 0; col < itemColNum; col++) {
@@ -125,8 +125,7 @@ function generateInitialItems(itemRowNum, itemColNum, square) {
             let newItem = _getRandomElement({
                 backgroundColor: backgroundColor,
                 col: col,
-                row: row,
-                square: square
+                row: row
             });
             //console.log(newItem);
             items.push(newItem);
@@ -136,7 +135,8 @@ function generateInitialItems(itemRowNum, itemColNum, square) {
 }
 
 //交换元素
-function swapItems(originItem, destItem, items) {
+function swapItems(swapArr, items) {
+    let [originItem, destItem] = swapArr;
     let newItems = items.map(function(item) {
         let newItem = Object.assign({}, item);
         if (item.col === originItem.col && item.row === originItem.row) {
@@ -185,7 +185,7 @@ function eliminateSameItems(items, targetItems, key) {
             return;
         }
         let arr = _detectSameItemsByItem(items, (item[key] ? item : Utils.findWhere(items, item)), key);
-        eliminateItems.concat(arr);
+        eliminateItems = eliminateItems.concat(arr);
     });
     //console.log(eliminateItems);
     if (eliminateItems.length) {
@@ -198,7 +198,7 @@ function eliminateSameItems(items, targetItems, key) {
                 newItems.push(_getRandomElement({
                     row: _getSupplementRowIndex(newItems, item.col),
                     col: item.col,
-                    square: item.square
+                    add: true
                 }));
             }
         });
@@ -305,4 +305,21 @@ function activateGridCell(grid, deleteItems) {
     return newGrid;
 }
 
-export default {generateGrid, generateInitialItems, swapItems, eliminateSameItems, getDropCols, dropItems, getMaxByKey, activateGridCell};
+function isInZone(maxRow, maxCol, item) {
+    if (item.row < 0 || item.col < 0 || item.row > maxRow - 1 || item.col > maxCol - 1) {
+        return false;
+    }
+    return true;
+}
+
+export default {
+    generateGrid,
+    generateInitialItems,
+    swapItems,
+    eliminateSameItems,
+    getDropCols,
+    dropItems,
+    getMaxByKey,
+    activateGridCell,
+    isInZone
+};

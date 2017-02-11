@@ -18,10 +18,7 @@ let FirstPage = React.createClass({
         let {actions, itemsInfo} = this.props;
 
         return (
-            <div>
-                <h2>Eliminate JS</h2>
-                <EliminateContainer itemsInfo={itemsInfo} actions={actions}/>
-            </div>
+            <EliminateContainer itemsInfo={itemsInfo} actions={actions}/>
         );
     },
     toNextPage() {
