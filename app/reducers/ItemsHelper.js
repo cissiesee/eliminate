@@ -1,20 +1,55 @@
 import Utils from '../utils/Utils';
+import Immutable from 'immutable';
+import {keywords} from '../config/keywords';
+import {colors, colorThreshold} from '../config/colors';
 //import sortedIndexBy from 'lodash/sortedIndexBy';
 
-const alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-const originColors = ['red', 'yellow', 'blue', 'green', 'purple'];
+//选择某些单词，每个单词赋予随机颜色，序列化成带颜色信息的字母
+let letters = _serializeToLetters(_colorWords(_pickUpRandomWords(keywords, 15)));
+
+function _pickUpRandomWords(words, num) {
+    let iwords = Immutable.List(words);
+    //let restWords = iwords;
+    let wordsPicked = [];
+    for(let i = 0; i < num; i++) {
+        let randomWord = Utils.randomArray(iwords.toArray());
+        wordsPicked.push(randomWord);
+        iwords = iwords.delete(iwords.indexOf(randomWord));
+    }
+    return wordsPicked;
+}
+
+function _colorWords(words) {
+    let icolors = Immutable.List(colors);
+    return words.map((word)=>{
+        let backgroundColor = Utils.randomArray(icolors.toArray());
+        icolors = icolors.delete(icolors.indexOf(backgroundColor));
+        return Object.assign({}, {
+            text: word,
+            backgroundColor: '#' + backgroundColor,
+            fontColor: (parseInt(backgroundColor, 16) > colorThreshold ? '#000' : '#fff')
+        });
+    });
+}
+
+function _serializeToLetters(words) {
+    let _letters = [];
+    words.forEach((word)=>{
+        word.text.split('').forEach(letter=>{
+            _letters.push(Object.assign({}, word, {
+                text: letter
+            }));
+        });
+    });
+    console.log(_letters);
+    return _letters;
+}
 
 function _getRandomElement(itemInfo) {
     let item = Object.assign({
-        id: Utils.uniqueId('ele-')
-        //text: Utils.randomArray(alphabets),
+        id: Utils.uniqueId('ele-'),
+        backgroundColor: '#' + Utils.randomArray(colors)
     }, itemInfo);
-    if (!item.backgroundColor) {
-        item.backgroundColor = Utils.randomArray(originColors);
-    }
-    if (!item.fontColor) {
-        item.fontColor = item.backgroundColor === 'yellow' ? '#000' : '#fff';
-    }
     return item;
 }
 
@@ -45,7 +80,7 @@ function _detectSameItem(item, items, direction, key, arr) {
     if (!targetItem) {
         return eArr;
     }
-    if (targetItem[key] === item[key]) {
+    if (targetItem[key] === item[key]) { //TODO match word
         eArr.push(targetItem);
         return _detectSameItem(targetItem, items, direction, key, eArr);
     } else {
@@ -105,29 +140,17 @@ function generateGrid(itemRowNum, itemColNum) {
 }
 
 function generateInitialItems(itemRowNum, itemColNum) {
-    let items = [];
+    let items = [], iletters = Immutable.List(letters);
     for (let row = 0; row < itemRowNum; row++) {
         for (let col = 0; col < itemColNum; col++) {
-            let colors = originColors;
             let leftItem = Utils.findWhere(items, {row, col: col - 1});
             let topItem = Utils.findWhere(items, {row: row - 1, col});
-            if (leftItem) {
-                colors = originColors.filter(function(item) {
-                    return item !== leftItem.backgroundColor;
-                });
-            }
-            if (topItem) {
-                colors = colors.filter(function(item) {
-                    return item !== topItem.backgroundColor;
-                });
-            }
-            let backgroundColor = Utils.randomArray(colors);
-            let newItem = _getRandomElement({
-                backgroundColor: backgroundColor,
+            let randomLetter = Utils.randomArray(iletters.toArray());
+            let newItem = _getRandomElement(Object.assign({
                 col: col,
                 row: row
-            });
-            //console.log(newItem);
+            }, randomLetter));
+            iletters = iletters.delete(iletters.indexOf(randomLetter));
             items.push(newItem);
         }
     }
