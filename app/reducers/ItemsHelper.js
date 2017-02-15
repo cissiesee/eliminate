@@ -47,9 +47,15 @@ function _serializeToLetters(words) {
 
 function _getRandomElement(itemInfo) {
     let item = Object.assign({
-        id: Utils.uniqueId('ele-'),
-        backgroundColor: '#' + Utils.randomArray(colors)
+        id: Utils.uniqueId('ele-')
+        //text: Utils.randomArray(alphabets),
     }, itemInfo);
+    if (!item.backgroundColor) {
+        item.backgroundColor = '#' + Utils.randomArray(colors);
+    }
+    if (!item.fontColor) {
+        item.fontColor = parseInt(item.backgroundColor, 16) > colorThreshold ? '#000' : '#fff';
+    }
     return item;
 }
 
@@ -140,17 +146,30 @@ function generateGrid(itemRowNum, itemColNum) {
 }
 
 function generateInitialItems(itemRowNum, itemColNum) {
-    let items = [], iletters = Immutable.List(letters);
+    let items = [];
     for (let row = 0; row < itemRowNum; row++) {
         for (let col = 0; col < itemColNum; col++) {
+            let _colors = colors;
             let leftItem = Utils.findWhere(items, {row, col: col - 1});
             let topItem = Utils.findWhere(items, {row: row - 1, col});
-            let randomLetter = Utils.randomArray(iletters.toArray());
+            if (leftItem) {
+                _colors = _colors.filter(function(item) {
+                    return item !== leftItem.backgroundColor;
+                });
+            }
+            if (topItem) {
+                _colors = _colors.filter(function(item) {
+                    return item !== topItem.backgroundColor;
+                });
+            }
+            let backgroundColor = Utils.randomArray(_colors);
+            //let randomLetter = Utils.randomArray(iletters.toArray());
             let newItem = _getRandomElement(Object.assign({
+                backgroundColor: '#' + backgroundColor,
                 col: col,
                 row: row
-            }, randomLetter));
-            iletters = iletters.delete(iletters.indexOf(randomLetter));
+            }));
+            //iletters = iletters.delete(iletters.indexOf(randomLetter));
             items.push(newItem);
         }
     }
